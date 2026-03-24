@@ -96,13 +96,15 @@ DB_MAPPING_MODE = ddl | skipped
 Запитай:
 
 > Як виглядає твоє середовище розробки?
-> 1. **Docker / WSL** — команди локально неможливо
-> 2. **Shared hosting** — FTP, команди недоступні
-> 3. **Локальний сервер** (XAMPP, Laragon) — команди доступні
+> 1. **Docker / WSL** — CLI-команди (`php`, `npm`, `composer`, `git` тощо) локально недоступні
+> 2. **Shared hosting** — FTP/панель, CLI-команди недоступні
+> 3. **Локальний сервер** (XAMPP, Laragon) — CLI-команди доступні
 > 4. Інше
 
 Запиши: `ENV = docker | shared | local | other:<опис>`
 Запиши: `CAN_RUN_COMMANDS = yes | no`
+
+> `CAN_RUN_COMMANDS` визначає чи можна запускати CLI-інструменти (`php`, `php -l`, `composer`, `npm`, `git` тощо). Якщо `no` — AI показує команди текстом, не виконує їх.
 
 ---
 
@@ -115,7 +117,7 @@ DB_MAPPING_MODE = ddl | skipped
 
 Прочитай: `.ai-oc-install/global/git.md`
 
-Запиши: `GIT = yes | no`, `GITIGNORE = exists | missing | none`
+Запиши: `GIT = yes | no`., `GITIGNORE = exists | missing | none`
 
 ---
 
@@ -133,11 +135,16 @@ DB_MAPPING_MODE = ddl | skipped
 
 ## БЛОК 6 — Структура проєкту
 
-Запитай:
+Якщо `CAN_RUN_COMMANDS = yes`:
 > Виконай у корені проєкту:
 > ```bash
 > ls system/library/
 > ```
+> І поділись результатом..
+
+Якщо `CAN_RUN_COMMANDS = no`:
+> Перейди в `system/library/` і скинь список файлів (або скриншот). Або я спробую прочитати директорію сам.
+> (AI: спробуй прочитати `system/library/` через файловий інструмент якщо є доступ)
 
 Якщо `OCMOD_MERGED = no`:
 > Надішли перелік `.ocmod.xml` файлів у репозиторії або короткий опис активних модифікацій з адмінки: Extensions → Modifications (назви/модулі).
