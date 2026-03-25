@@ -117,7 +117,7 @@ DB_MAPPING_MODE = ddl | skipped
 
 Прочитай: `.ai-oc-install/global/git.md`
 
-Запиши: `GIT = yes | no`., `GITIGNORE = exists | missing | none`
+Запиши: `GIT = yes | no`, `GITIGNORE = exists | missing | none`
 
 ---
 
@@ -135,7 +135,7 @@ DB_MAPPING_MODE = ddl | skipped
 
 ## БЛОК 6 — Структура проєкту
 
-Якщо `CAN_RUN_COMMANDS = yes`:
+Запитай:
 > Виконай у корені проєкту:
 > ```bash
 > ls system/library/

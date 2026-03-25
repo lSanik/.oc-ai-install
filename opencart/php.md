@@ -135,3 +135,38 @@ dd($zxc,$gds);//Буде вивід як в vd(), потім die()
 // include/require для OC компонентів
 include DIR_APPLICATION . 'model/catalog/product.php';
 ```
+
+---
+
+## Анонімні функції (closures)
+
+**Заборонено.** Не використовувати `function(...) use (...)` в коді.
+
+Якщо без анонімної функції технічно не обійтись — **зупинись і запитай користувача** перед написанням коду.
+
+```php
+// ПОГАНО — анонімна функція
+$this->session->data[$key] = array_filter(
+    $this->session->data[$key],
+    function ($t) use ($now, $window) {
+        return ($now - $t) < $window;
+    }
+);
+
+// ДОБРЕ — логіка в окремому методі класу
+$this->session->data[$key] = $this->filterByWindow(
+    $this->session->data[$key], $now, $window
+);
+
+// ...
+
+private function filterByWindow(array $timestamps, int $now, int $window): array {
+    $result = [];
+    foreach ($timestamps as $t) {
+        if (($now - $t) < $window) {
+            $result[] = $t;
+        }
+    }
+    return $result;
+}
+```
