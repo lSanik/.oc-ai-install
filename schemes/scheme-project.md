@@ -1,20 +1,20 @@
-# Схема — project.md
+# Scheme — project.md
 
-## ІНСТРУКЦІЯ ДЛЯ AI
+## INSTRUCTIONS FOR THE AI
 
-Цей файл — шаблон для генерації `project.md`.
-`project.md` є **PERSISTENT** файлом — **ніколи не перезаписувати** при reinstall.
-Заповнюється один раз під час інсталяції. Оновлюється тільки за явним проханням користувача.
+This file is the template for generating `project.md`.
+`project.md` is **PERSISTENT** — **never overwrite** on reinstall.
+Filled once during install. Updated only when the user explicitly asks.
 
 ---
 
-## ШАБЛОН
+## TEMPLATE
 
 ```markdown
 # Project Data
 
-> Згенеровано: [дата]
-> Інструмент: [TOOL]
+> Generated: [date]
+> Tool: [TOOL]
 
 ---
 
@@ -33,41 +33,41 @@
 
 ## Warning Zone
 
-[Якщо є Warning Files — для кожного:]
-### [шлях до файлу]
-- Причина: [причина]
-- Наслідки: [що може зламатись]
-- Дія: попередити користувача і чекати підтвердження перед правкою
+[If there are Warning Files — for each:]
+### [path to file]
+- Reason: [reason]
+- Impact: [what could break]
+- Action: warn the user and wait for confirmation before editing
 
-[Завжди — для OpenCart / ocStore:]
+[Always — for OpenCart / ocStore:]
 ### migration.php
-- Причина: журнал ручних змін схеми БД для викладки на прод
-- Формат: `die(0);` першим рядком; новіші записи зверху; SQL у рядках-рядках
-- Дія: AI читає для контексту, Тільки пише, якщо в архітектурі БД потрібні якісь зміни. Ніколи не апдейтить данні в ньому. 
+- Reason: manual DB schema change log for production rollout
+- Format: `die(0);` as first line after `<?php`; newer entries at the top; SQL in string literals
+- Action: AI reads for context; changes only on explicit user command (see `opencart/model.md`). Never edit arbitrary data without instruction.
 
-[Якщо більше нічого:]
-Більше немає на цей момент.
+[If nothing else:]
+None at this time.
 
 ---
 
 ## Project Restrictions
 
-[Легасі-обмеження, бізнес-правила, кастомні рішення з Блоку 9.]
-[Якщо нічого — написати "Немає специфічних обмежень на цей момент."]
+[Legacy limits, business rules, custom solutions from Block 9.]
+[If none — write "No project-specific restrictions at this time."]
 
 ---
 
 ## Gotchas
 
-[Важливі особливості проєкту які треба знати.]
-[Якщо нічого — написати "Немає специфічних особливостей на цей момент."]
+[Important project quirks to know.]
+[If none — write "No specific gotchas at this time."]
 ```
 
 ---
 
-## Правила генерації
+## Generation rules
 
-1. Заповнювати всі секції на основі зібраних даних
-2. Якщо даних немає — писати `unknown` або відповідне пояснення
-3. Файл зберігається як `project.md` в `.claude/` або `.cursor/` (залежно від TOOL)
-4. **Це PERSISTENT файл — не перезаписувати при reinstall**
+1. Fill all sections from collected data
+2. If data is missing — use `unknown` or a short explanation
+3. Save as `project.md` under `.claude/` or `.cursor/` depending on `TOOL`
+4. **This is PERSISTENT — do not overwrite on reinstall**

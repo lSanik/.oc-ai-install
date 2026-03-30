@@ -1,70 +1,70 @@
 # OpenCart — Language
 
-## Структура мовних файлів
+## Language file structure
 
-Language файли — PHP масиви. Один файл на один контролер/модуль.
+Language files are PHP arrays. One file per controller/module.
 
 ```
-catalog/language/[locale]/cactus/[назва].php
-admin/language/[locale]/extension/module/cactus_[назва].php
+catalog/language/[locale]/cactus/[name].php
+admin/language/[locale]/extension/module/cactus_[name].php
 ```
 
-Локалі визначаються при інсталяції. Типові: `uk-ua`, `ru-ru`, `en-gb`.
+Locales are set at install. Typical: `uk-ua`, `ru-ru`, `en-gb`.
 
 ---
 
-## Структура файлу
+## File structure
 
 ```php
 <?php
-// Заголовки
-$_['heading_title']    = 'Валюти закупівлі';
+// Headings
+$_['heading_title']    = 'Purchase currencies';
 
-// Текст
-$_['text_edit']        = 'Налаштування';
-$_['text_success']     = 'Налаштування збережено';
-$_['text_loading']     = 'Завантаження...';
+// Text
+$_['text_edit']        = 'Settings';
+$_['text_success']     = 'Settings saved';
+$_['text_loading']     = 'Loading...';
 
-// Поля форми
-$_['entry_usd_rate']   = 'Курс USD';
-$_['entry_eur_rate']   = 'Курс EUR';
-$_['entry_updated']    = 'Останнє оновлення';
+// Form fields
+$_['entry_usd_rate']   = 'USD rate';
+$_['entry_eur_rate']   = 'EUR rate';
+$_['entry_updated']    = 'Last updated';
 
-// Кнопки
-$_['button_save']      = 'Зберегти';
-$_['button_cancel']    = 'Скасувати';
-$_['button_refresh']   = 'Оновити курси';
+// Buttons
+$_['button_save']      = 'Save';
+$_['button_cancel']    = 'Cancel';
+$_['button_refresh']   = 'Refresh rates';
 
-// Помилки
-$_['error_permission'] = 'Попередження: у вас немає прав для зміни налаштувань!';
-$_['error_rate']       = 'Курс має бути більше нуля!';
+// Errors
+$_['error_permission'] = 'Warning: you do not have permission to modify settings!';
+$_['error_rate']       = 'Rate must be greater than zero!';
 
-// Стовпці таблиць
-$_['column_currency']  = 'Валюта';
-$_['column_rate']      = 'Курс';
-$_['column_action']    = 'Дія';
+// Table columns
+$_['column_currency']  = 'Currency';
+$_['column_rate']      = 'Rate';
+$_['column_action']    = 'Action';
 ```
 
 ---
 
-## Завантаження і використання
+## Loading and usage
 
-### В контролері
+### In controller
 
 ```php
-// Завантаження
+// Load
 $this->load->language('cactus/currency_recalc');           // catalog
 $this->load->language('extension/module/cactus_currency'); // admin
 
-// Передача конкретних рядків у view
+// Pass specific strings to view
 $data['heading_title'] = $this->language->get('heading_title');
 $data['button_save']   = $this->language->get('button_save');
 
-// Або передати всі одразу (зручно для великих форм)
-// — але тоді у view будуть всі ключі з файлу
+// Or pass everything at once (large forms)
+// — then view has all keys from the file
 ```
 
-### У view (Twig)
+### In view (Twig)
 
 ```twig
 {{ heading_title }}
@@ -74,23 +74,23 @@ $data['button_save']   = $this->language->get('button_save');
 
 ---
 
-## Мультимовність
+## Multiple languages
 
-Якщо проєкт багатомовний — створювати файл для **кожної** локалі.
+If the project is multilingual — create a file for **each** locale.
 
 ```
-admin/language/uk-ua/extension/module/cactus_currency.php  ← основна
-admin/language/ru-ru/extension/module/cactus_currency.php  ← якщо є ru-ru
-admin/language/en-gb/extension/module/cactus_currency.php  ← якщо є en-gb
+admin/language/uk-ua/extension/module/cactus_currency.php  ← primary
+admin/language/ru-ru/extension/module/cactus_currency.php  ← if ru-ru exists
+admin/language/en-gb/extension/module/cactus_currency.php  ← if en-gb exists
 ```
 
-Локалі проєкту визначаються при інсталяції. Якщо невідомі — запитай.
+Project locales are set at install. If unknown — ask.
 
 ---
 
-## Правила
+## Rules
 
-- Всі рядки що виводяться користувачу — тільки через language файли, не хардкодити в контролері чи view
-- Ключі в нижньому регістрі з підкресленням: `heading_title`, `error_permission`
-- Префікси для структури: `text_`, `entry_`, `button_`, `error_`, `column_`, `tab_`
-- Не дублювати рядки — якщо `button_save` є в іншому файлі і значення однакове, все одно дублювати (кожен файл незалежний)
+- All user-visible strings — only via language files, not hardcoded in controller or view
+- Keys lowercase with underscores: `heading_title`, `error_permission`
+- Prefixes for structure: `text_`, `entry_`, `button_`, `error_`, `column_`, `tab_`
+- Do not dedupe across files — each file is independent even if values match

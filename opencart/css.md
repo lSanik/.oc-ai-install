@@ -1,30 +1,29 @@
 # OpenCart — CSS
 
-## Каталог — кастомні стилі
+## Catalog — custom styles
 
+For catalog styles, **only** edit this file (create if missing).
+Do not touch other theme stylesheets unless necessary; override with a selector and `!important` if required.
 
-Зі стилів завжди писати, редагувати тільки цей файл для каталогу.
-Якщо його не існує, створити.
-Інши файли стилів не чіпаємо. Якщо треба, в цьому перебиваємо селектером бо important
 ```
-catalog/view/theme/[ТЕМА]/stylesheet/snk.css ← або загальний custom файл теми
+catalog/view/theme/[THEME]/stylesheet/snk.css ← or the theme's general custom file
 ```
 
-Якщо тема невідома — **запитай** перед тим як писати шлях.
+If the theme is unknown — **ask** before writing paths.
 
 ---
 
-## Адмінка — стилі
+## Admin — styles
 
-Admin OC 3.x використовує **Bootstrap 3** (вбудований). Не підключати Bootstrap 4/5 без задачі.
+Admin OC 3.x uses **Bootstrap 3** (built-in). Do not switch to Bootstrap 4/5 without a task.
 
-Кастомний CSS для адмінки:
+Custom admin CSS:
 
 ```
-admin/view/stylesheet/cactus/   ← кастомні стилі адмінки
+admin/view/stylesheet/cactus/   ← custom admin styles
 ```
 
-Підключення:
+Load:
 
 ```php
 $this->document->addStyle('view/stylesheet/cactus/my-admin-style.css');
@@ -32,16 +31,16 @@ $this->document->addStyle('view/stylesheet/cactus/my-admin-style.css');
 
 ---
 
-## Override стилів теми
+## Overriding theme styles
 
-Не перезаписувати CSS файли ядра теми. Замість цього:
+Do not overwrite core theme CSS files. Instead:
 
-1. Створити окремий файл у `cactus/` підпапці
-2. Підключити після основних стилів теми (буде мати пріоритет)
+1. Create a separate file under a `cactus/` subfolder
+2. Load it after main theme styles (higher cascade priority)
 
 ---
 
-## Правила
+## Rules
 
-- Не хардкодити назву теми в CSS (тільки через PHP-змінну в контролері)
-- Запитуй де зберігати CSS якщо тема незнайома
+- Do not hardcode theme name in CSS (only via PHP variables in the controller)
+- Ask where to store CSS if the theme is unfamiliar

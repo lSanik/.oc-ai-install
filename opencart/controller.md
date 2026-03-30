@@ -1,24 +1,24 @@
 # OpenCart — Controller
 
-## Роль контролера
+## Controller role
 
-Контролер — тільки диригент. Він:
-1. Отримує запит
-2. Завантажує потрібні моделі / мови / бібліотеки
-3. Викликає методи моделі
-4. Передає дані у View
+The controller is only the conductor. It:
+1. Receives the request
+2. Loads models / languages / libraries as needed
+3. Calls model methods
+4. Passes data to the view
 
-**Бізнес-логіка, SQL, обробка даних — тільки в моделі.**
+**Business logic, SQL, data processing — only in the model.**
 
-Підготовка даних для view: складні гілки — у **приватні методи** цього контролера. Якщо та сама підготовка потрібна у **кількох контролерах** у **новому** коді (легасі без задачі не чіпати) — **helper**. Наявні helper **читати** можна; **додавати** або **змінювати** helper — **лише після явної згоди користувача** (спершу запитай). Деталі — у згенерованому `code-style.md` (схема `scheme-code-style.md`).
+Complex view data prep — **private methods** on this controller. If the same prep is needed in **several controllers** in **new** code (leave legacy alone without a task) — use a **helper**. Existing helpers may be **read**; **adding** or **changing** helpers — **only after explicit user approval** (ask first). Details — generated `code-style.md` (scheme `scheme-code-style.md`).
 
-Що саме входить у типову роль контролера в OpenCart і чому неприпустимий «конвеєр» між кількома моделями — [`main.md`](main.md) (розділ «Контролер — типова роль у стилі OpenCart»).
+What belongs in a typical OpenCart controller and why a multi-model "pipeline" is wrong — [`main.md`](main.md) (section "Controller — typical role in OpenCart style").
 
 ---
 
-## Catalog контролер
+## Catalog controller
 
-### Структура файлу
+### File structure
 
 ```php
 <?php
@@ -40,28 +40,28 @@ class ControllerCactusCurrencyRecalc extends Controller {
     }
 
     private function _buildData(): array {
-        // підготовка даних для view
+        // prepare data for view
         return [];
     }
 }
 ```
 
-### Маршрутизація catalog
+### Catalog routing
 
 ```
 route=cactus/currency_recalc
 → catalog/controller/cactus/currency_recalc.php
 → class ControllerCactusCurrencyRecalc
-→ метод index() за замовчуванням
+→ index() by default
 ```
 
-Кастомний метод:
+Custom method:
 ```
 route=cactus/currency_recalc/process
-→ метод process()
+→ process()
 ```
 
-### Читання вхідних даних (catalog)
+### Reading input (catalog)
 
 ```php
 // GET
@@ -71,25 +71,25 @@ $search     = isset($this->request->get['search']) ? $this->db->escape($this->re
 // POST
 $name = isset($this->request->post['name']) ? $this->db->escape($this->request->post['name']) : '';
 
-// Перевірка методу
+// Method check
 if ($this->request->server['REQUEST_METHOD'] === 'POST') {
-    // обробка форми
+    // handle form
 }
 ```
 
 ---
 
-## Admin контролер
+## Admin controller
 
-### Розташування та маршрут
+### Path and route
 
 ```
 admin/controller/extension/module/cactus_currency.php
-→ маршрут: extension/module/cactus_currency
-→ клас: ControllerExtensionModuleCactusCurrency
+→ route: extension/module/cactus_currency
+→ class: ControllerExtensionModuleCactusCurrency
 ```
 
-### Структура admin контролера
+### Admin controller structure
 
 ```php
 <?php
@@ -142,67 +142,67 @@ class ControllerExtensionModuleCactusCurrency extends Controller {
 }
 ```
 
-### Збереження налаштувань через `setting/setting`
+### Saving settings via `setting/setting`
 
 ```php
-// Зберегти — асоціативний масив під ключем (code)
+// Save — associative array under module code
 $this->model_setting_setting->editSetting('cactus_currency', $this->request->post);
 
-// Читати
+// Read
 $this->config->get('cactus_currency_some_key');
-// або
+// or
 $this->model_setting_setting->getSettingValue('cactus_currency_some_key');
 ```
 
-### Посилання в адмінці
+### Admin URLs
 
 ```php
-// завжди з user_token і true (HTTPS)
+// always with user_token and true (HTTPS)
 $this->url->link('extension/module/cactus_currency', 'user_token=' . $this->session->data['user_token'], true);
 ```
 
-### Права доступу
+### Permissions
 
-Після створення нового адмін-модуля — нагадати користувачу додати права:
-> В адмінці: System → Users → User Groups → Administrator → додати **access** і **modify** для `extension/module/cactus_[назва]`
+After creating a new admin module — remind the user to add permissions:
+> In admin: System → Users → User Groups → Administrator → add **access** and **modify** for `extension/module/cactus_[name]`
 
 ---
 
-## Спільні правила (admin і catalog)
+## Shared rules (admin and catalog)
 
-### ЗАБОРОНЕНО в контролері
+### FORBIDDEN in controller
 
 ```php
-// SQL в контролері
+// SQL in controller
 $this->db->query("SELECT ...");
 
-// Модель admin в catalog контролері і навпаки
-$this->load->model('admin/...');   // в catalog — заборонено
+// Admin model in catalog controller and vice versa
+$this->load->model('admin/...');   // in catalog — forbidden
 
-// Бізнес-логіка в контролері
-if ($price > 0) { $discounted = $price * 0.9; ... } // → це в модель
+// Business logic in controller
+if ($price > 0) { $discounted = $price * 0.9; ... } // → belongs in model
 
-// oc_event без явного прохання
+// oc_event without explicit request
 $this->model_extension_event->addEvent(...);
 
 // include/require
 include(DIR_APPLICATION . 'model/...');
 ```
 
-### Завантаження моделей
+### Loading models
 
 ```php
-// catalog завантажує тільки catalog моделі
-$this->load->model('catalog/product');       // 
-$this->load->model('cactus/my_module');      // 
+// catalog loads only catalog models
+$this->load->model('catalog/product');
+$this->load->model('cactus/my_module');
 
-// admin завантажує admin моделі
-$this->load->model('catalog/product');       //  (в admin є свої catalog моделі)
-$this->load->model('setting/setting');       // 
-$this->load->model('extension/module/cactus_currency'); // 
+// admin loads admin models
+$this->load->model('catalog/product');       // admin has its own catalog models
+$this->load->model('setting/setting');
+$this->load->model('extension/module/cactus_currency');
 ```
 
-### AJAX відповідь
+### AJAX response
 
 ```php
 public function ajaxAction(): void {
@@ -210,7 +210,7 @@ public function ajaxAction(): void {
     $json = [];
 
     try {
-        // логіка через модель
+        // logic via model
         $json['success'] = true;
         $json['data']    = $this->model_cactus_something->getData();
     } catch (\Exception $e) {

@@ -1,64 +1,64 @@
 # OpenCart — System / Library
 
-## Головне правило
+## Main rule
 
 ```
-system/  →  НЕ ЧІПАТИ
-            виняток: system/library/ — тільки з явного дозволу
+system/  →  DO NOT TOUCH
+            exception: system/library/ — only with explicit permission
 ```
 
 ---
 
-## system/library/ — з дозволу
+## system/library/ — with permission
 
-Бібліотеки — це спільні компоненти які використовуються по всьому проєкту.
-Помилка тут = каскадний збій по всьому сайту.
+Libraries are shared components used across the project.
+A mistake here = cascading failure across the site.
 
-**Перед будь-якою правкою файлу в `system/library/` — обов'язково попередити:**
+**Before editing any file in `system/library/` — warn the user:**
 
 ```
- SYSTEM/LIBRARY: [шлях до файлу]
-Це спільна бібліотека. Зміна може вплинути на весь сайт.
-Продовжити? (так / ні)
+ SYSTEM/LIBRARY: [path to file]
+This is a shared library. Changes may affect the whole site.
+Continue? (yes / no)
 ```
 
-### Коли може знадобитись
+### When it may be needed
 
-- Додати нову кастомну бібліотеку: `system/library/cactus/[назва].php`
-- Розширити існуючу бібліотеку (рідко, з обережністю)
-- Підключити стороннє рішення
+- Add a new custom library: `system/library/cactus/[name].php`
+- Extend an existing library (rare, with care)
+- Integrate a third-party package
 
-### Кастомні бібліотеки
+### Custom libraries
 
-Новий функціонал — в підпапку cactus:
+New functionality — under cactus:
 
 ```
 system/library/cactus/currency_helper.php
 system/library/cactus/image_processor.php
 ```
 
-Підключення:
+Load:
 ```php
 $this->load->library('cactus/currency_helper');
-// доступно як $this->cactus_currency_helper
+// available as $this->cactus_currency_helper
 ```
 
-### Відомі критичні бібліотеки (Warning Zone за замовчуванням)
+### Known critical libraries (default Warning Zone)
 
-Ці файли є в більшості OC проєктів і критичні:
+Common in OC projects:
 
-| Файл | Чому критичний |
-|------|---------------|
-| `system/library/seopro.php` | SEO URL по всьому сайту — баг = всі URL ламаються |
-| `system/library/db/mysqli.php` | DB підключення — баг = сайт падає |
-| `system/library/session.php` | Сесії — баг = логін не працює |
-| `system/library/cache.php` | Кеш — баг = сповільнення або некоректні дані |
+| File | Why critical |
+|------|--------------|
+| `system/library/seopro.php` | SEO URLs site-wide — bug breaks all URLs |
+| `system/library/db/mysqli.php` | DB connection — bug takes site down |
+| `system/library/session.php` | Sessions — bug breaks login |
+| `system/library/cache.php` | Cache — bug slows or corrupts data |
 
-Додаткові Warning Zone файли — визначаються при інсталяції конкретного проєкту.
+Extra Warning Zone files — defined at project install.
 
 ---
 
-## system/engine/ — НІКОЛИ
+## system/engine/ — NEVER
 
 ```
 system/engine/action.php
@@ -70,31 +70,31 @@ system/engine/registry.php
 system/engine/router.php
 ```
 
-Це серце MVC. Правка тут = непередбачувана поведінка по всьому сайту.
-**Не читати, не пропонувати правки, не обговорювати зміни без крайньої потреби.**
+MVC core. Editing here = unpredictable behaviour site-wide.
+**Do not read for edits, do not suggest changes, do not discuss changes** except in extreme cases.
 
 ---
 
-## system/storage/ — ЗАБОРОНЕНО (Blocklist)
+## system/storage/ — FORBIDDEN (Blocklist)
 
 ```
 system/storage/cache/
 system/storage/logs/
-system/storage/modification/   ← згенеровані OCMOD файли
+system/storage/modification/   ← generated OCMOD output
 system/storage/session/
 system/storage/upload/
 ```
 
-В blocklist. Не читати, не чіпати, не виводити вміст.
+In blocklist. Do not read, modify, or output contents.
 
 ---
 
-## Все інше в system/ — НЕ ЧІПАТИ
+## Everything else under system/ — DO NOT TOUCH
 
 ```
-system/config/    ← конфіги (в blocklist частково)
-system/helper/    ← хелпери (читати можна, правити — тільки з питанням)
-system/vendor/    ← Composer залежності
+system/config/    ← configs (partly blocklist)
+system/helper/    ← helpers (read OK, edit only after asking)
+system/vendor/    ← Composer dependencies
 ```
 
-Якщо задача вимагає правки чогось в `system/` поза `library/` — **спочатку запитай** користувача чи це дійсно потрібно і чи немає іншого способу.
+If a task requires editing something in `system/` outside `library/` — **ask first** whether it is really needed and if there is another way.

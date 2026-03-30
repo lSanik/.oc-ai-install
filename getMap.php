@@ -29,7 +29,7 @@ if ($mysqli->connect_error) {
 
 $mysqli->set_charset('utf8mb4');
 
-// ---- збір таблиць ----
+// ---- collect tables ----
 $tablesResult = $mysqli->query("SHOW TABLES");
 $tables = [];
 while ($row = $tablesResult->fetch_array()) {
@@ -37,14 +37,14 @@ while ($row = $tablesResult->fetch_array()) {
 }
 $total = count($tables);
 
-// ---- папки ----
+// ---- directories ----
 $mapDir    = __DIR__ . '/map';
 $tablesDir = $mapDir . '/db_tables';
 
 if (!is_dir($mapDir))    mkdir($mapDir, 0755, true);
 if (!is_dir($tablesDir)) mkdir($tablesDir, 0755, true);
 
-// ---- db_map.php (індекс) ----
+// ---- db_map.php (index) ----
 $indexLines = [];
 $indexLines[] = '<?php';
 $indexLines[] = '';
@@ -57,13 +57,13 @@ $indexLines[] = '';
 
 file_put_contents($mapDir . '/db_map.php', implode("\n", $indexLines));
 
-// ---- окремі файли таблиць ----
+// ---- one PHP file per table ----
 foreach ($tables as $table) {
     $createResult = $mysqli->query("SHOW CREATE TABLE `{$table}`");
     $createRow    = $createResult->fetch_assoc();
     $ddl          = $createRow['Create Table'] . ";";
 
-    // екрануємо для PHP рядка
+    // escape for PHP string
     $ddlEscaped = str_replace(
         ['\\', '"'],
         ['\\\\', '\\"'],

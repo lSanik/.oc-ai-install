@@ -1,28 +1,28 @@
-# Схема — Cursor Rules
+# Scheme — Cursor Rules
 
-## ІНСТРУКЦІЯ ДЛЯ AI
+## INSTRUCTIONS FOR THE AI
 
-Cursor використовує файли в `.cursor/rules/` з розширенням `.mdc`.
-Кожен файл — окреме правило з метаданими.
+Cursor uses files under `.cursor/rules/` with the `.mdc` extension.
+Each file is one rule with metadata.
 
-Генеруй три файли:
-1. `.cursor/rules/main.mdc` — головний контекст проєкту
-2. `.cursor/rules/blocklist.mdc` — червона зона
-3. `.cursor/rules/warning-zone.mdc` — жовта зона
+Generate three files:
+1. `.cursor/rules/main.mdc` — main project context
+2. `.cursor/rules/blocklist.mdc` — red zone
+3. `.cursor/rules/warning-zone.mdc` — yellow zone
 
 ---
 
-## ШАБЛОН: .cursor/rules/main.mdc
+## TEMPLATE: .cursor/rules/main.mdc
 
 ```markdown
 ---
-description: Головний контекст проєкту. Читати завжди.
+description: Main project context. Always read.
 alwaysApply: true
 ---
 
-# Project: [назва]
+# Project: [name]
 
-Ти дуже професійний і досвідчений розробник Opencart системи.
+You are a highly skilled OpenCart developer.
 
 @.cursor/project.md
 @.cursor/ai-map.md
@@ -32,21 +32,22 @@ alwaysApply: true
 
 @.ai-oc-install/global/blocklist.md
 
-**Перед виконанням і аналізом задачі** обов’язково прочитай з `.ai-oc-install/opencart/` **лише** файли, релевантні поточній задачі (не підвантажуй усі `.md` одразу). Наприклад: PHP — `php.md`; JS — `js.md`; CSS — `css.md`; контролери / моделі / шаблони — `controller.md`, `model.md`, `view.md`; мови — `language.md`; system — `system-library.md`; БД — `mysql.md` і **`.ai-oc-install/map/db_mapping.md`**; адмінка — `admin.md`; вітрина — `catalog.md`.
+**Before working on a task** read from `.ai-oc-install/opencart/` **only** the files relevant to the current task (do not load every `.md` at once). For example: PHP — `php.md`; JS — `js.md`; CSS — `css.md`; controllers / models / templates — `controller.md`, `model.md`, `view.md`; languages — `language.md`; system — `system-library.md`; DB — `mysql.md` and **`.ai-oc-install/map/db_mapping.md`**; if you need **full column-level `CREATE TABLE`** for a specific table from DB introspection, open **`.ai-oc-install/map/db_tables/<table_name>.php`** when it exists; table name index — **`.ai-oc-install/map/db_map.php`**; admin — `admin.md`; storefront — `catalog.md`.
 
 ## Priority
-Правила цього workspace мають пріоритет над глобальними user rules Cursor.
+Workspace rules take precedence over global Cursor user rules.
 
 ## AI Files
 
-PERSISTENT — ніколи не видаляти і не перезаписувати при reinstall:
-- `.cursor/project.md` — дані проєкту, warning zone, обмеження
-- `.cursor/ai-map.md` — карта кастомних модулів і відхилень від стандарту
-- `.ai-oc-install/map/db_mapping.md` — опис / DDL кастомних таблиць БД (спільно для Claude і Cursor)
-- `.ai-oc-install/map/*.php` — PHP файли таблиць від getMap.php (за наявності)
+PERSISTENT — never delete or overwrite on reinstall:
+- `.cursor/project.md` — project data, warning zone, constraints
+- `.cursor/ai-map.md` — map of custom code and deviations from standard
+- `.ai-oc-install/map/db_mapping.md` — curated custom / changed table DDL and notes (shared for Claude and Cursor)
+- `.ai-oc-install/map/db_map.php` — optional generated index of table names (when map generator was run)
+- `.ai-oc-install/map/db_tables/*.php` — optional one file per table: `$ddl` string = full `CREATE TABLE` with all columns, types, nullability, defaults, keys, engine (see `scheme-db-mapping.md`)
 
-REGENERATABLE — перезаписуються при reinstall:
-- `.cursor/rules/main.mdc` — цей файл
+REGENERATABLE — overwritten on reinstall:
+- `.cursor/rules/main.mdc` — this file
 - `.cursor/rules/blocklist.mdc`
 - `.cursor/rules/warning-zone.mdc`
 - `.cursor/code-style.md`
@@ -54,61 +55,61 @@ REGENERATABLE — перезаписуються при reinstall:
 
 ---
 
-## ШАБЛОН: .cursor/rules/blocklist.mdc
+## TEMPLATE: .cursor/rules/blocklist.mdc
 
 ```markdown
 ---
-description: Файли які заборонено читати або модифікувати.
+description: Files that must not be read or modified.
 alwaysApply: true
 ---
 
 # Blocklist
 
-Ніколи не читати, не модифікувати, не виводити вміст:
+Never read, modify, or output contents of:
 
 - config.php
 - admin/config.php
 - .env
 - .env.*
-[специфічні для проєкту]
+[project-specific]
 
-При запиті до цих файлів відповідати:
-"Цей файл в Червоній Зоні — не можу відкрити з міркувань безпеки."
+When asked for these files, reply:
+"This file is in the Red Zone. I cannot read or modify it for security reasons."
 ```
 
 ---
 
-## ШАБЛОН: .cursor/rules/warning-zone.mdc
+## TEMPLATE: .cursor/rules/warning-zone.mdc
 
 ```markdown
 ---
-description: Файли з обмеженим доступом. Читати можна, правити — тільки з підтвердженням.
+description: Restricted files. Reading allowed; edits only with confirmation.
 alwaysApply: true
 ---
 
 # Warning Zone
 
-Перед правкою будь-якого файлу з цього списку — обов'язково попередити користувача.
+Before editing any file in this list — warn the user.
 
-[Для кожного Warning File:]
-## [шлях до файлу]
-Причина: [причина]
-Наслідки: [що може зламатись]
-Дія: виведи попередження і жди підтвердження перед правкою.
+[For each Warning File:]
+## [path to file]
+Reason: [reason]
+Impact: [what could break]
+Action: show warning and wait for confirmation before editing.
 
-[Якщо список порожній:]
-На цей момент Warning Zone порожня.
+[If the list is empty:]
+Warning Zone is empty at this time.
 ```
 
 ---
 
-## Різниця між старим і новим форматом Cursor
+## Old vs new Cursor format
 
-| Старий | Новий |
-|--------|-------|
-| `.cursorrules` (один файл) | `.cursor/rules/*.mdc` (кілька файлів) |
-| Немає метаданих | Метадані в YAML frontmatter |
-| Немає `alwaysApply` | `alwaysApply: true/false` |
+| Old | New |
+|-----|-----|
+| `.cursorrules` (single file) | `.cursor/rules/*.mdc` (multiple files) |
+| No metadata | YAML frontmatter |
+| No `alwaysApply` | `alwaysApply: true/false` |
 
-Генеруй **новий формат** (`.mdc`).
-Якщо користувач має старий Cursor — повідом що краще оновитись.
+Generate the **new** format (`.mdc`).
+If the user has an old Cursor — suggest upgrading.

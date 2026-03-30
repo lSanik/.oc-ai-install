@@ -1,34 +1,34 @@
 # OpenCart — View (Twig)
 
-## ІНСТРУКЦІЯ ДЛЯ AI
+## INSTRUCTIONS FOR THE AI
 
-**У цьому пакеті view описаний лише як Twig** (файли `.twig`). Як збирається `$data` у контролері й викликається `$this->load->view` — див. [`controller.md`](controller.md).
+**In this pack the view layer is Twig only** (`.twig` files). How `$data` is built in the controller and `$this->load->view` is called — see [`controller.md`](controller.md).
 
-Тема проєкту визначається при інсталяції. Якщо невідома — запитай:
-> Яка тема? (назва папки в `catalog/view/theme/`)
+Theme is set at install. If unknown — ask:
+> Which theme? (folder name under `catalog/view/theme/`)
 
 ---
 
-## Два різних світи: адмінка і каталог
+## Two worlds: admin and catalog
 
 | | Admin | Catalog |
-|---|---|---|
-| Шлях | `admin/view/template/` | `catalog/view/theme/[тема]/template/` |
-| Движок | **Twig** | **Twig** |
-| Стилі | Bootstrap (вбудований OC) | Тема (своя, довільна) |
+|---|-------|---------|
+| Path | `admin/view/template/` | `catalog/view/theme/[theme]/template/` |
+| Engine | **Twig** | **Twig** |
+| Styles | Bootstrap (built into OC) | Theme (custom) |
 | Layout | `common/header` + `common/column_left` + `common/footer` | `common/header` + `common/footer` |
 
 ---
 
-## Admin View
+## Admin view
 
-### Розташування
+### Location
 
 ```
 admin/view/template/extension/module/cactus_currency.twig
 ```
 
-### Базовий шаблон адмін-сторінки
+### Basic admin page template
 
 ```twig
 {{ header }}{{ column_left }}
@@ -80,27 +80,27 @@ admin/view/template/extension/module/cactus_currency.twig
 {{ footer }}
 ```
 
-### Правила адмін view
+### Admin view rules
 
-- Стилі — Bootstrap 3 (OC 3.x вбудований), не підключати зовнішні CSS без потреби
-- Форми — `id="form-*"`, кнопка save з атрибутом `form="form-*"` (поза формою)
-- Іконки — FontAwesome (`fa fa-*`)
-- Таблиці — клас `table table-bordered table-hover`
-- JS — писати в кінці файлу в тегу `<script>`
+- Styles — Bootstrap 3 (OC 3.x built-in), do not add external CSS without need
+- Forms — `id="form-*"`, save button with `form="form-*"` (outside form)
+- Icons — FontAwesome (`fa fa-*`)
+- Tables — class `table table-bordered table-hover`
+- JS — at end of file in `<script>`
 
 ---
 
-## Catalog View
+## Catalog view
 
-### Розташування
+### Location
 
 ```
-catalog/view/theme/[ТЕМА]/template/cactus/[назва].twig
+catalog/view/theme/[THEME]/template/cactus/[name].twig
 ```
 
-Якщо тема невідома — **запитай** перед тим як писати шлях.
+If theme unknown — **ask** before writing paths.
 
-### Базовий шаблон catalog сторінки
+### Basic catalog page template
 
 ```twig
 {{ header }}
@@ -115,7 +115,7 @@ catalog/view/theme/[ТЕМА]/template/cactus/[назва].twig
     <div id="content" class="col-sm-12">
       <h1>{{ heading_title }}</h1>
 
-      {# основний контент #}
+      {# main content #}
 
     </div>
   </div>
@@ -123,46 +123,46 @@ catalog/view/theme/[ТЕМА]/template/cactus/[назва].twig
 {{ footer }}
 ```
 
-### Кастомний CSS
+### Custom CSS
 
-Питай де зберігати кастомний CSS — кожна тема має своє місце. Не розкидати стилі по різних файлах без потреби.
+Ask where to store custom CSS — each theme differs. Do not scatter styles without reason.
 
-Типові місця:
-- `catalog/view/theme/[тема]/stylesheet/custom.css`
-- `catalog/view/theme/[тема]/stylesheet/[назва].css`
+Typical locations:
+- `catalog/view/theme/[theme]/stylesheet/custom.css`
+- `catalog/view/theme/[theme]/stylesheet/[name].css`
 
-Якщо невідомо — запитай користувача.
+If unknown — ask the user.
 
 ---
 
-## Twig — базові правила
+## Twig — basics
 
 ```twig
-{# Виведення змінної (екранується автоматично) #}
+{# Variable output (auto-escaped) #}
 {{ variable }}
 
-{# Без екранування (тільки для довіреного HTML) #}
+{# No escaping (trusted HTML only) #}
 {{ variable | raw }}
 
-{# Умова #}
+{# Condition #}
 {% if condition %}...{% endif %}
 
-{# Цикл #}
+{# Loop #}
 {% for item in items %}
   {{ item.name }}
 {% endfor %}
 
-{# Посилання (href з контролера — див. controller.md) #}
+{# Link (href from controller — see controller.md) #}
 <a href="{{ item.href }}">{{ item.text }}</a>
 
-{# Переклад #}
-{{ text_save }}   {# змінна з language файлу, передана з контролера #}
+{# Translation #}
+{{ text_save }}   {# from language file, passed from controller #}
 ```
 
-### Передача даних з контролера у view
+### Passing data from controller to view
 
 ```php
-// Контролер
+// Controller
 $data['heading_title'] = $this->language->get('heading_title');
 $data['products']      = $this->model_cactus_products->getProducts();
 $data['action']        = $this->url->link('cactus/products/save', '', true);
@@ -171,7 +171,7 @@ $this->response->setOutput($this->load->view('cactus/products', $data));
 ```
 
 ```twig
-{# View — змінні доступні напряму #}
+{# View — variables available directly #}
 <h1>{{ heading_title }}</h1>
 {% for product in products %}
   <p>{{ product.name }} — {{ product.price }}</p>
@@ -180,18 +180,18 @@ $this->response->setOutput($this->load->view('cactus/products', $data));
 
 ---
 
-## Логіка у Twig
+## Logic in Twig
 
-- **Допустимо:** прості умови й цикли, **фільтри** Twig (`|date`, `|raw` для довіреного HTML тощо), легке форматування для відображення.
-- **Краще в контролері:** складні обчислення, багато проміжних змінних, нетривіальні гілки логіки, підготовка даних для кількох частин шаблону. У контролері для цього **допускається приватний метод**, що збирає/нормалізує `$data` для view.
-- Якщо та сама підготовка потрібна у **кількох контролерах** у **новому** коді (старий код без задачі не рефакторити) — винось у **helper**; див. згенерований `code-style.md` (політика helper: читати можна, додавати/змінювати — лише з згоди користувача).
+- **Allowed:** simple conditions and loops, **Twig filters** (`|date`, `|raw` for trusted HTML, etc.), light display formatting.
+- **Better in controller:** heavy computation, many intermediate variables, non-trivial branches, data prep for several template parts. A **private method** that normalizes `$data` for the view is OK in the controller.
+- If the same prep is needed in **several controllers** in **new** code (do not refactor old code without a task) — use a **helper**; see generated `code-style.md` (helper policy: read OK, add/change only with user consent).
 
 ---
 
-## Заборонено у Twig
+## Forbidden in Twig
 
-- SQL або звертання до моделі з шаблону.
-- Підключення зовнішніх ресурсів без потреби:
+- SQL or model calls from the template.
+- External resources without need:
 
 ```twig
 <link rel="stylesheet" href="https://external.com/style.css">
@@ -199,6 +199,6 @@ $this->response->setOutput($this->load->view('cactus/products', $data));
 
 ---
 
-## OC 2.x і `.tpl`
+## OC 2.x and `.tpl`
 
-У **2.x** у проєктах ще бувають шаблони **`.tpl`** (PHP). **Цей документ їх не описує** — орієнтир **Twig**, як у 3.x / 4.x. Легасі `.tpl` **не** переписуємо на Twig без явної задачі користувача.
+In **2.x** projects may still use **`.tpl`** (PHP). **This doc does not cover them** — focus is **Twig** as in 3.x / 4.x. Legacy `.tpl` **is not** rewritten to Twig without an explicit user task.

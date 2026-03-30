@@ -1,121 +1,121 @@
-# Схема — code-style.md
+# Scheme — code-style.md
 
-## ІНСТРУКЦІЯ ДЛЯ AI
+## INSTRUCTIONS FOR THE AI
 
-Генеруй **один** файл **`code-style.md`** у каталозі обраного інструменту (як у `ai-oc-install.md`):
+Generate **one** file **`code-style.md`** under the chosen tool directory (as in `ai-oc-install.md`):
 
-- Якщо `TOOL = claude` → `.claude/code-style.md`
-- Якщо `TOOL = cursor` → `.cursor/code-style.md`
+- If `TOOL = claude` → `.claude/code-style.md`
+- If `TOOL = cursor` → `.cursor/code-style.md`
 
-У ролі **Project Installer** **не** читай `.ai-oc-install/opencart/*` — генеруй `code-style.md` **лише** з цього шаблону. Деталі MVC / cactus / `migration.php` — у `opencart/*.md` (робочий асистент читає їх вибірково).
+In the **Project Installer** role **do not** read `.ai-oc-install/opencart/*` — build `code-style.md` **only** from this template. MVC / cactus / `migration.php` details are in `opencart/*.md` (working assistant reads them selectively).
 
 ---
 
-## ШАБЛОН
+## TEMPLATE
 
 ```markdown
 # Code style — OpenCart / ocStore
 
-Правила написання коду та меж рефакторингу. Читати разом з головним файлом правил (`CLAUDE.md` / `main.mdc`).
+Coding rules and refactor boundaries. Read together with the main rules file (`CLAUDE.md` / `main.mdc`).
 
 ---
 
-## Події та хуки OpenCart (`oc_event` тощо)
+## OpenCart events and hooks (`oc_event`, etc.)
 
-- **Не** додавати події, хуки та обробники `oc_event` / аналогічні механізми ядра, якщо користувач **явно** цього не просив у задачі.
-- Якщо користувач просить саме event-driven підхід — реалізуй мінімально необхідне і зафіксуй у `ai-map.md` / задачі, що саме додано.
-
----
-
-## Catalog і admin — без змішування
-
-- **Не** викликати й **не** підвантажувати моделі/контролери **admin** з коду **catalog** і навпаки. Окремі контексти, окремі entrypoints.
-- Спільна логіка — у **моделях** у відповідних зонах (`catalog/model/cactus/...` та `admin/model/...`) або в **системних бібліотеках** лише за потреби та з узгодженням з Warning Zone / `ai-map.md`.
-- Не робити «крос-виклики» між адмінкою і вітриною через прямі `load->model` чужої зони.
+- **Do not** add events, hooks, or core `oc_event`-style handlers unless the user **explicitly** asks in the task.
+- If the user wants an event-driven approach — implement the minimum needed and record in `ai-map.md` / the task what was added.
 
 ---
 
-## Helper і спільні утиліти
+## Catalog and admin — no mixing
 
-- Якщо одна й та сама підготовка даних потрібна у **кількох контролерах** у **новому** коді (існуюче легасі без задачі не рефакторити) — доцільний **helper** (типовий шлях `system/library/` або згідно `ai-map.md`).
-- **Читати** наявні helper — **дозволено**.
-- **Додавати** новий helper або **редагувати** існуючий — **тільки після явної згоди користувача**; спершу **запитай**.
-
----
-
-## Моделі, методи й зони відповідальності
-
-- Тримай **баланс**: не сліпо дроби кожен метод у окремий файл, але й не звалюй несумісні речі в «одне відро».
-- **Нова сутність** (доменна логіка) — як правило **окрема модель** у відповідній зоні (`catalog/model/cactus/...` або `admin/model/...`).
-- Якщо до тієї ж сутності додається **окремий шар** (наприклад **API** іншої форми) — логічно **окрема модель** під цей шар, а не роздування однієї загальної моделі «на все».
-- Якщо одна модель відповідає за **різні домени** (наприклад і **товари**, і **замовлення**) — для **нового** коду розділяй на **окремі моделі**; існуючий легасі не переписуй без задачі.
-- Методи групуй за змістом (читання, запис, агрегації тощо) у межах однієї моделі, щоб файли залишались зручними для читання в стилі OpenCart.
+- **Do not** call or load **admin** models/controllers from **catalog** code and vice versa. Separate contexts, separate entrypoints.
+- Shared logic — in **models** in the right area (`catalog/model/cactus/...` and `admin/model/...`) or in **system libraries** only when needed and aligned with Warning Zone / `ai-map.md`.
+- No cross-zone `load->model` between admin and storefront.
 
 ---
 
-## Dev-контролери (`catalog/controller/cactus/dev/`)
+## Helpers and shared utilities
 
-- Для **dev**-скриптів і одноразових дій **модель не обов’язкова**: логіку можна тримати **в контролері** — на те вони й dev.
-- Не рознось dev-логіку по «продакшн»-моделях, якщо це не перейде в постійний функціонал (тоді — винесення за scope задачі).
-
----
-
-## Синтаксис PHP (обмеження проєкту)
-
-- **Не** використовувати конструкцію **`match`**.
-- **Забороняється** використання **`??`** для значень за замовчуванням. Використовуй **`isset()` + тернарний оператор**, наприклад `isset($qwe) ? $qwe : ''` або `($qwe !== null && $qwe !== '') ? $qwe : ''` — залежно від того, які значення вважаються «порожніми» в контексті.
+- If the same data prep is needed in **several controllers** in **new** code (do not refactor legacy without a task) — prefer a **helper** (typical path `system/library/` or per `ai-map.md`).
+- **Reading** existing helpers — **allowed**.
+- **Adding** a helper or **editing** one — **only after explicit user approval**; **ask first**.
 
 ---
 
-## Масиви та вибірки
+## Models, methods, and responsibility
 
-- **Сортування або впорядкування великих масивів за ключами** (індекси, зовнішні id тощо) **вітається**, коли це **реально спрощує** подальшу обробку або відповідає задачі (наприклад зібрати всі записи з одним `old_product_id` у зручну структуру перед циклом).
-- Не роби зайвих проходів лише «для краси», якщо достатньо одного читабельного циклу.
-
----
-
-## Дані без «глобалів»
-
-- **Не** передавати дані через **глобальні змінні** PHP (`$GLOBALS`, довільні `global $foo`).
-- Якщо потрібен доступ до ядра OpenCart поза стандартним контекстом — використовуй **`$this->registry`** або **`$this->config`** (і інші властивості контролера/моделі OC), а не власні глобальні сховища.
+- Keep **balance**: do not split every method into its own file, but do not dump unrelated logic into one bucket.
+- A **new entity** (domain logic) — usually a **separate model** in the right zone (`catalog/model/cactus/...` or `admin/model/...`).
+- If the same entity gets a **separate layer** (e.g. another **API** shape) — logically a **separate model** for that layer, not one bloated generic model.
+- If one model covers **different domains** (e.g. both **products** and **orders**) — for **new** code split into **separate models**; do not rewrite legacy without a task.
+- Group methods by purpose (read, write, aggregates, etc.) within one model so files stay readable in OpenCart style.
 
 ---
 
-## Параметри за посиланням (`&`)
+## Dev controllers (`catalog/controller/cactus/dev/`)
 
-- **Не** оголошувати аргументи методів **за посиланням** (`function foo(&$data)` тощо), щоб не розводити побічні ефекти через виклик. Повертай результат **явно** (`return`, структурований масив, об'єкт за потреби).
-- Це **обов'язково** для **всього нового** коду. **Легасі не переписувати** під це правило, якщо користувач **явно** не попросив у задачі (тоді лише згадані файли / scope).
+- For **dev** scripts and one-off actions a **model is optional**: logic may live **in the controller** — that is what dev controllers are for.
+- Do not spread dev logic into production models unless it becomes permanent (then refactor per task scope).
+
+---
+
+## PHP syntax (project limits)
+
+- **Do not** use **`match`**.
+- **`??`** for default values is **forbidden**. Use **`isset()` + ternary**, e.g. `isset($qwe) ? $qwe : ''` or `($qwe !== null && $qwe !== '') ? $qwe : ''` depending on what counts as "empty" in context.
+
+---
+
+## Arrays and collections
+
+- **Sorting or indexing large arrays by keys** (indexes, external ids, etc.) is **welcome** when it **really simplifies** later work or matches the task (e.g. group rows by `old_product_id` before a loop).
+- Do not add extra passes only for style if one clear loop is enough.
+
+---
+
+## Data without globals
+
+- **Do not** pass data via PHP **globals** (`$GLOBALS`, ad-hoc `global $foo`).
+- If you need OpenCart core outside normal context — use **`$this->registry`** or **`$this->config`** (and other controller/model properties), not custom global stores.
+
+---
+
+## Parameters by reference (`&`)
+
+- **Do not** declare method arguments **by reference** (`function foo(&$data)` etc.) to avoid hidden side effects through calls. Return values **explicitly** (`return`, structured array, object if needed).
+- **Mandatory** for **all new** code. **Do not rewrite legacy** for this unless the user **explicitly** asks in the task (then only listed files / scope).
 
 ---
 
 ## DRY (Don't Repeat Yourself)
 
-- Застосовуй DRY до **нового** коду та до коду, який **прямо входить у scope поточної задачі**.
-- **Не** рефактори вже існуючий код проєкту «для краси» або лише тому, що бачиш дублікат, якщо цього **немає в формулюванні задачі**.
-- Якщо в задачі є **рефакторинг під DRY** (або користувач явно просить прибрати дублікати):
-  - Пріоритетно винось спільне з коду, який **вже перелічений у задачі** або **створений у межах цієї ж задачі**.
-  - Не розтягуй рефакторинг на сторонні файли без явної згоди користувача.
+- Apply DRY to **new** code and to code **in the current task scope**.
+- **Do not** refactor existing project code "for beauty" or only because you see duplication if it is **not in the task**.
+- If the task includes **DRY refactor** (or the user explicitly asks to remove duplicates):
+  - Prefer extracting shared code from what is **already listed in the task** or **created in the same task**.
+  - Do not stretch refactor into unrelated files without explicit approval.
 
 ---
 
-## Код і оформлення (нагадування)
+## Code and formatting (reminder)
 
-- У файлах коду (`.php`, `.js`, **`.twig`**; легасі `.tpl` — лише якщо правиш старий шаблон, `.css`) **не** додавати емодзі, смайли та декоративні символи-іконки без явного прохання користувача.
-- Решта: екранування SQL, `DB_PREFIX`, cactus-шляхи, `migration.php` при зміні БД — як у документації `opencart/` і в головному файлі правил.
+- In code files (`.php`, `.js`, **`.twig`**; legacy `.tpl` only if editing old templates, `.css`) **do not** add emoji, emoticons, or decorative symbols without explicit user request.
+- The rest: SQL escaping, `DB_PREFIX`, cactus paths, `migration.php` on DB changes — as in `opencart/` docs and the main rules file.
 
 ---
 
-## Оновлення
+## Updates
 
-- Зміни цих правил або нові домовленості про стиль після задачі — оновлювати вручну в `code-style.md` (і за потреби коротко зафіксуй у `ai-map.md`).
+- After tasks, update these rules or new style agreements manually in `code-style.md` (and briefly in `ai-map.md` if needed).
 ```
 
 ---
 
-## Правила генерації
+## Generation rules
 
-Ці три пункти — **для ШІ**, який з шаблону вище збирає файл **`code-style.md`** у проєкті (не для розробника магазину напряму).
+These three points are **for the AI** building **`code-style.md`** in the project (not for the store developer directly).
 
-1. У заголовку згенерованого `code-style.md` можна вказати назву проєкту; якщо назви немає — лиши загальний підзаголовок на кшталт OpenCart / ocStore.
-2. **Не вставляй повний текст** з `opencart/*.md` — він і так читається окремо. У `code-style.md` лишай **тільки** правила стилю та меж рефакторингу з цього шаблону (і короткі нагадування, якщо треба). Довгий перелік у попередніх розділах шаблону вже покриває: моделі/зони, dev-контролери, заборону `match` і `??` для дефолтів, без `&` у параметрах для нового коду, helper, масиви, registry, DRY і scope задачі, події, catalog/admin — це **не** дублювати з `opencart/*.md` слово в слово.
-3. Якщо під час інсталяції користувач назвав **особливі** обмеження проєкту — додай у згенерований `code-style.md` короткий підрозділ **«Особливості проєкту»** з цими умовами.
+1. In the generated `code-style.md` heading you may add the project name; if none — keep a generic OpenCart / ocStore subtitle.
+2. **Do not paste full text** from `opencart/*.md` — it is read separately. In `code-style.md` keep **only** style and refactor boundaries from this template (and short reminders if needed). The long sections above already cover: models/zones, dev controllers, ban on `match` and `??` for defaults, no `&` params for new code, helpers, arrays, registry, DRY and task scope, events, catalog/admin — **do not** duplicate `opencart/*.md` verbatim.
+3. If the user named **special** project constraints during install — add a short **"Project specifics"** subsection to the generated `code-style.md` with those conditions.

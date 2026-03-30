@@ -1,11 +1,11 @@
-# Git — підказки для інсталера.
+# Git — hints for the installer
 
-## ІНСТРУКЦІЯ ДЛЯ AI
+## INSTRUCTIONS FOR THE AI
 
-Цей файл доповнює **Блок 4** у `ai-oc-install.md`.
+This file supplements **Block 4** in `ai-oc-install.md`.
 
-- Якщо `GIT = yes` — за бажання користувача можна згадати гілку за замовчуванням або flow (не обов’язково).
-- `GITIGNORE = exists` — `.gitignore` вже є; `missing` — згенеруй мінімальний під час фази генерації (див. `ai-oc-install.md`).
-- `GITIGNORE = none` — користувач без Git ignore; не наполягай на створенні, якщо не просили.
+- If `GIT = yes` — you may mention the default branch or workflow at the user's discretion (optional).
+- `GITIGNORE = exists` — `.gitignore` is already present; `missing` — generate a minimal one during the generation phase (see `ai-oc-install.md`).
+- `GITIGNORE = none` — the user has no Git ignore; do not insist on creating one unless asked.
 
-Не читай вміст `.git/` і не проси секрети з remote.
+Do not read `.git/` contents and do not ask for secrets from remotes.

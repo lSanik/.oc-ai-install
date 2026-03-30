@@ -1,25 +1,25 @@
 # OpenCart — Model
 
-## Роль моделі
+## Model role
 
-Модель — єдине місце де живе:
-- SQL запити
-- Бізнес-логіка
-- Обробка даних
-- Робота з `$this->db`
+The model is the only place for:
+- SQL queries
+- Business logic
+- Data processing
+- `$this->db` usage
 
-Контролер ніколи не пише SQL. Все через модель.
+The controller never writes SQL. Everything goes through the model.
 
 ---
 
-## Структура моделі
+## Model structure
 
 ```php
 <?php
 class ModelCactusCurrencyRecalc extends Model {
 
     /**
-     * Отримати всі товари з валютою
+     * Get all products with currency fields
      */
     public function getProductsWithCurrency(): array {
         $query = $this->db->query("
@@ -33,7 +33,7 @@ class ModelCactusCurrencyRecalc extends Model {
     }
 
     /**
-     * Оновити ціну товару в UAH
+     * Update product price in UAH
      */
     public function updateProductPrice(int $product_id, float $price_uah): void {
         $this->db->query("
@@ -47,50 +47,50 @@ class ModelCactusCurrencyRecalc extends Model {
 
 ---
 
-## Правила SQL
+## SQL rules
 
-### Escape — завжди і для всього
+### Escape — always
 
 ```php
-// Правильно
+// Correct
 $name       = $this->db->escape($this->request->post['name']);
 $product_id = (int)$product_id;
 $price      = (float)$price;
 
-// Заборонено — сирі дані в запиті
+// Forbidden — raw data in query
 $this->db->query("SELECT * FROM ... WHERE name = '" . $_POST['name'] . "'");
 ```
 
-### Префікс таблиць
+### Table prefix
 
 ```php
-// Правильно
+// Correct
 "SELECT * FROM `" . DB_PREFIX . "product`"
 
-// Заборонено
+// Forbidden
 "SELECT * FROM `oc_product`"
 ```
 
-### Типові запити
+### Typical queries
 
 ```php
-// Один запис
+// Single row
 $query = $this->db->query("SELECT ...");
-return $query->row;   // масив або порожній масив
+return $query->row;   // array or empty
 
-// Список
+// List
 $query = $this->db->query("SELECT ...");
-return $query->rows;  // масив масивів
+return $query->rows;  // array of rows
 
-// Кількість
+// Count
 $query = $this->db->query("SELECT COUNT(*) AS total FROM ...");
 return (int)$query->row['total'];
 
-// INSERT — отримати id
+// INSERT — get id
 $this->db->query("INSERT INTO ...");
 return $this->db->getLastId();
 
-// Перевірка існування
+// Existence check
 $query = $this->db->query("SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "product` WHERE product_id = '" . (int)$product_id . "'");
 return (bool)$query->row['total'];
 ```
@@ -122,12 +122,12 @@ public function getProducts(array $data = []): array {
 
 ---
 
-## migration.php — ОБОВ'ЯЗКОВО при зміні БД
+## migration.php — REQUIRED on DB changes
 
-**Будь-яка зміна структури БД = запис в `migration.php` у корені проєкту.**
-Без цього запису задача не вважається завершеною.
+**Any schema change = entry in root `migration.php`.**
+Without it the task is not complete.
 
-### Формат
+### Format
 
 ```php
 <?php
@@ -135,14 +135,14 @@ die(0);
 
 // DB schema change log
 
-# 2026-03-23 | oc_product: додано cactus_currency_code, cactus_price_foreign
+# 2026-03-23 | oc_product: added cactus_currency_code, cactus_price_foreign
 '
 ALTER TABLE `oc_product`
   ADD COLUMN `cactus_currency_code` varchar(8) NOT NULL DEFAULT \'\' AFTER `price`,
   ADD COLUMN `cactus_price_foreign` decimal(15,4) NOT NULL DEFAULT \'0.0000\' AFTER `cactus_currency_code`;
 ';
 
-# 2026-03-20 | cactus_rates: створено таблицю курсів валют
+# 2026-03-20 | cactus_rates: created exchange rate table
 '
 CREATE TABLE `oc_cactus_rates` (
   `rate_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -154,41 +154,41 @@ CREATE TABLE `oc_cactus_rates` (
 ';
 ```
 
-### Правила migration.php
+### migration.php rules
 
-- Перший рядок після `<?php` — завжди `die(0);`
-- Другий рядок — порожній або `// DB schema change log`
-- Новий запис — **зверху** (новіші вище)
-- SQL у рядках в лапках — PHP парсить файл цілком, синтаксичні помилки поза рядками можуть зламати підключення
-- AI читає для контексту, **не змінює** без явної команди
+- First line after `<?php` — always `die(0);`
+- Second line — empty or `// DB schema change log`
+- New entries — **at the top** (newest first)
+- SQL inside quoted strings — PHP parses the whole file; syntax errors outside strings can break includes
+- AI reads for context, **does not change** without explicit command
 
 ---
 
-## Налаштування через `setting/setting`
+## Settings via `setting/setting`
 
-Для збереження конфігів модуля (не окремі таблиці):
+For module config (not separate tables):
 
 ```php
-// В моделі адмін-модуля
+// In admin module model
 $this->load->model('setting/setting');
 
-// Зберегти (асоціативний масив під кодом модуля)
+// Save (associative array under module code)
 $this->model_setting_setting->editSetting('cactus_currency', [
     'cactus_currency_usd_rate' => 38.5,
     'cactus_currency_eur_rate' => 42.0,
     'cactus_currency_updated'  => date('Y-m-d H:i:s'),
 ]);
 
-// Читати в будь-якому місці
+// Read anywhere
 $rate = $this->config->get('cactus_currency_usd_rate');
 ```
 
 ---
 
-## Транзакції (якщо потрібні)
+## Transactions (when needed)
 
 ```php
-// OC не має вбудованого API для транзакцій — через прямий запит
+// OC has no built-in transaction API — raw queries
 $this->db->query("START TRANSACTION");
 try {
     $this->db->query("UPDATE ...");
@@ -202,18 +202,18 @@ try {
 
 ---
 
-## ЗАБОРОНЕНО в моделі
+## FORBIDDEN in model
 
 ```php
-// Сирі дані без escape
+// Raw data without escape
 "WHERE name = '" . $name . "'"
 
-// Хардкод префіксу
+// Hardcoded prefix
 "FROM `oc_product`"
 
-// Звертання до $_POST, $_GET напряму
+// Direct $_POST / $_GET
 $_POST['name']
 
-// Логіка відображення (redirect, response)
+// Presentation logic (redirect, response)
 $this->response->redirect(...);
 ```

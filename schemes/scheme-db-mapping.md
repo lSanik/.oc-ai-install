@@ -1,55 +1,68 @@
-# Схема — db_mapping.md
+# Scheme — db_mapping.md
 
-## ІНСТРУКЦІЯ ДЛЯ AI
+## INSTRUCTIONS FOR THE AI
 
-Генеруй **один** файл **`db_mapping.md`** за **фіксованим** шляхом (однаково для Claude і Cursor):
+Generate **one** file **`db_mapping.md`** at this **fixed** path (same for Claude and Cursor):
 
 **`.ai-oc-install/map/db_mapping.md`**
 
-Каталог **`.ai-oc-install/map/`** створи, якщо його ще немає. PHP-файли таблиць від getMap.php клади в **той самий** каталог `.ai-oc-install/map/`.
+Create **`.ai-oc-install/map/`** if it does not exist.
 
 ---
 
-## Ролі артефактів (OpenCart / ocStore, режим `ddl`)
+## `.ai-oc-install/map/` — what lives here
 
-| Артефакт | Для кого | Призначення |
-|----------|----------|-------------|
-| **`migration.php`** (корінь проєкту) | Людина | Журнал **ручних** змін схеми БД (що накатити на прод: поля, таблиці, індекси, `ALTER` тощо). |
-| **`.ai-oc-install/map/db_mapping.md`** | ШІ | **Першоджерело моделі БД** проєкту (повний контекст схеми для роботи в коді). |
+| Path | Origin | Role for the AI |
+|------|--------|------------------|
+| **`db_mapping.md`** | **Install / manual** | Curated DDL and notes: custom tables, modified tables, `ddl` vs `skipped` mode. Start here for DB context. |
+| **`db_map.php`** | **Optional generator** (e.g. `getMap.php` in this repo) | Small PHP file: a string listing **all table names** in the DB (plus metadata). Use to see what exists before opening per-table files. |
+| **`db_tables/<table_name>.php`** | **Same generator** | **One file per table.** Each file sets `$ddl` to a **full `CREATE TABLE ...` statement** as returned by MySQL (`SHOW CREATE TABLE`). That string includes **every column** with name, type, `NULL`/`NOT NULL`, `DEFAULT`, `AUTO_INCREMENT`, **primary key**, **indexes**, `ENGINE`, `CHARSET` — i.e. complete field-level schema for that table. Use when you must match exact types in queries/migrations or when `db_mapping.md` does not list that table. **Do not** treat these PHP files as executable application code — they are schema carriers; the project root still uses `migration.php` for human rollout steps. |
 
-Після **будь-якої** зміни схеми БД оновлюй **обидва**: спочатку лог у `migration.php` (за правилами проєкту), потім актуальний вміст у `.ai-oc-install/map/db_mapping.md`.
-
----
-
-Режим задається під час інсталяції (**Блок 7** `ai-oc-install.md`):
-
-| Ситуація | Режим | Що кладемо в `db_mapping.md` |
-|----------|--------|-----------------------------|
-| **OpenCart / ocStore** — стандартний збір DDL | `ddl` | Повні **`CREATE TABLE`** у блоках `` ```sql `` |
-| Користувач **явно не надає** формальний DDL (обмеження, NDA, тимчасово) | `skipped` | Короткий текст: формальний мапінг таблиць не ведеться; контекст даних — у **`ai-map.md`** |
-
-Після заголовка `# DB Mapping` вкажи рядок **`DB_MAPPING_MODE: ddl | skipped`**.
+`db_map.php` and `db_tables/` may be absent until someone runs the generator; **`db_mapping.md`** is created by the installer when the user supplies DDL (or `skipped` text).
 
 ---
 
-## Шаблон — режим `ddl` (OpenCart / ocStore)
+## Artifact roles (OpenCart / ocStore, `ddl` mode)
+
+| Artifact | Audience | Purpose |
+|----------|----------|---------|
+| **`migration.php`** (project root) | Human | **Manual** DB schema change log (what to apply on prod: fields, tables, indexes, `ALTER`, etc.). |
+| **`.ai-oc-install/map/db_mapping.md`** | AI | **Primary curated DB model** for coding (tables the installer documented). |
+| **`.ai-oc-install/map/db_tables/*.php`** (optional) | AI | **Machine snapshot**: full `CREATE TABLE` per table for exact column/type/index detail. |
+
+After **any** schema change, update **both**: first the log in `migration.php` (per project rules), then the content of `.ai-oc-install/map/db_mapping.md`. Regenerate `db_map.php` / `db_tables/` when you refresh from the live database.
+
+---
+
+Mode is set during install (**Block 7** in `ai-oc-install.md`):
+
+| Situation | Mode | What goes in `db_mapping.md` |
+|-----------|------|------------------------------|
+| **OpenCart / ocStore** — standard DDL collection | `ddl` | Full **`CREATE TABLE`** in `` ```sql `` blocks |
+| User **explicitly skips** formal DDL (constraints, NDA, temporary) | `skipped` | Short text: formal table mapping not maintained; data context in **`ai-map.md`** |
+
+After the `# DB Mapping` heading, add **`DB_MAPPING_MODE: ddl | skipped`**.
+
+---
+
+## Template — `ddl` mode (OpenCart / ocStore)
 
 ````markdown
 # DB Mapping
 
 **DB_MAPPING_MODE:** ddl
 
-Мапінг — **повні `CREATE TABLE`** з дампу / `SHOW CREATE TABLE`. Без паролів і назв БД.
+Mapping — full **`CREATE TABLE`** from dump / `SHOW CREATE TABLE`. No passwords or DB names.
 
-Шлях до цього файлу: **`.ai-oc-install/map/db_mapping.md`** (завжди, незалежно від Claude / Cursor).
+Path to this file: **`.ai-oc-install/map/db_mapping.md`** (always, Claude or Cursor).
 
-Префікс таблиць — як у БД; у PHP OpenCart — `DB_PREFIX`.
+Table prefix — as in the database; in OpenCart PHP use `DB_PREFIX`.
 
 ---
 
 ## DDL
 
-Одна таблиця = один блок `` ```sql ``.
+One table = one `` ```sql `` block.
 
 ```sql
 CREATE TABLE `oc_example` (
@@ -60,32 +73,32 @@ CREATE TABLE `oc_example` (
 
 ---
 
-## Нотатки
+## Notes
 
 - 
 ````
 
 ---
 
-## Шаблон — режим `skipped`
+## Template — `skipped` mode
 
 ```markdown
 # DB Mapping
 
 **DB_MAPPING_MODE:** skipped
 
-Формальний мапінг таблиць **не ведеться** (за вибором користувача під час інсталяції).
+Formal table mapping is **not maintained** (user choice during install).
 
-**Для AI:** див. **`ai-map.md`** — кастомні таблиці, важливі поля, домовленості про дані, обмеження.
+**For AI:** see **`ai-map.md`** — custom tables, important fields, data conventions, constraints.
 
-## Коротко про дані (за відповіддю користувача)
+## Brief data notes (from user reply)
 
 - 
 ```
 
 ---
 
-## Приклад формату DDL (одна таблиця)
+## DDL format example (one table)
 
 ```sql
 CREATE TABLE `oc_address` (
@@ -108,10 +121,10 @@ CREATE TABLE `oc_address` (
 
 ---
 
-## Правила
+## Rules
 
-1. Не дублюй повний мапінг у `ai-map.md` — там посилання, режим і короткий контекст (для `skipped` — детальніший опис даних у `ai-map.md`).
-2. **Режим `ddl`:** зміна схеми → онови `.ai-oc-install/map/db_mapping.md` (актуальні `CREATE TABLE`) + `migration.php` (журнал для проду).
-3. **Режим `skipped`:** зміни в домовленостях про дані → оновлюй **`ai-map.md`**, у `db_mapping.md` лише за потреби уточни рядок «коротко про дані».
-4. DDL **частинами** у чаті (1/3, 2/3…) — збирай у один вміст **`.ai-oc-install/map/db_mapping.md`** після останньої частини.
-5. Без локального дампу в репо — ок; публічний git + чутлива структура — обережно з комітом `db_mapping.md`.
+1. Do not duplicate the full mapping in `ai-map.md` — there: reference, mode, and short context (for `skipped` — richer data description in `ai-map.md`).
+2. **`ddl` mode:** schema change → update `.ai-oc-install/map/db_mapping.md` (current `CREATE TABLE`) + `migration.php` (prod journal).
+3. **`skipped` mode:** data convention changes → update **`ai-map.md`**; in `db_mapping.md` only refine the "brief data notes" line if needed.
+4. DDL **in parts** in chat (1/3, 2/3…) — merge into one **`.ai-oc-install/map/db_mapping.md`** after the last part.
+5. No local dump in repo — OK; public git + sensitive structure — be careful committing `db_mapping.md`.

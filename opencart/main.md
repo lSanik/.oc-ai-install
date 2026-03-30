@@ -1,173 +1,173 @@
-# OpenCart — Головний файл
+# OpenCart — Main file
 
-## ІНСТРУКЦІЯ ДЛЯ AI
+## INSTRUCTIONS FOR THE AI
 
-Ти працюєш з проєктом на OpenCart / ocStore.
+You work on an OpenCart / ocStore project.
 
-Інструкції платформи лежать у каталозі **`.ai-oc-install/opencart/`**. **Не** завантажуй усі `.md` з цієї папки одразу: **перед аналізом і виконанням задачі** відкривай **лише** потрібні файли.
+Platform instructions live under **`.ai-oc-install/opencart/`**. **Do not** load every `.md` from this folder at once: **before analysing and executing a task** open **only** the files you need.
 
-**Мапінг БД** (DDL / опис таблиць, PHP з getMap) — завжди в **`.ai-oc-install/map/`** (`db_mapping.md` та за потреби `*.php`). Для SQL-конвенцій і запитів додатково читай [`mysql.md`](mysql.md).
+**DB mapping** — under **`.ai-oc-install/map/`**: start with **`db_mapping.md`** (curated DDL from install). For a **full column-level** definition of one table (as in `SHOW CREATE TABLE`), open **`db_tables/<table_name>.php`** when present (`$ddl` string). **`db_map.php`** lists all table names. SQL conventions — [`mysql.md`](mysql.md).
 
-### Задача → які файли читати
+### Task → which files to read
 
-| Контекст задачі | Файли в `.ai-oc-install/opencart/` |
-|-----------------|-------------------------------------|
-| Загальний огляд, версія, Cactus, OCMOD | `main.md` (цей файл) |
-| Контролери, маршрути, `$this->load` | `controller.md` |
-| Моделі, SQL у шарі даних | `model.md`, `mysql.md` |
-| Twig / шаблони | `view.md` |
-| Мовні файли, переклади | `language.md` |
-| `system/library`, ядро | `system-library.md` |
-| JS фронту / адмінки | `js.md` |
-| Стилі | `css.md` |
-| Синтаксис PHP, обмеження проєкту | `php.md` |
-| Адмінка (extension, форми) | `admin.md`, плюс за потреби `controller.md`, `view.md` |
-| Вітрина (каталог) | `catalog.md`, плюс за потреби `controller.md`, `view.md` |
+| Task context | Files in `.ai-oc-install/opencart/` |
+|--------------|--------------------------------------|
+| Overview, version, Cactus, OCMOD | `main.md` (this file) |
+| Controllers, routes, `$this->load` | `controller.md` |
+| Models, SQL in data layer | `model.md`, `mysql.md` |
+| Twig / templates | `view.md` |
+| Language files, translations | `language.md` |
+| `system/library`, core | `system-library.md` |
+| Storefront / admin JS | `js.md` |
+| Styles | `css.md` |
+| PHP syntax, project limits | `php.md` |
+| Admin (extension, forms) | `admin.md`, plus `controller.md`, `view.md` if needed |
+| Storefront (catalog) | `catalog.md`, plus `controller.md`, `view.md` if needed |
 
 ---
 
-## Визначення версії
+## Detecting version
 
-Перш за все — визнач версію OC. Читай `index.php` у корені проєкту:
+First determine OC version. Read `index.php` in the project root:
 
 ```php
-// шукай рядок типу:
+// look for a line like:
 define('VERSION', '3.0.3.7');
 ```
 
-Якщо не знайшов або немає доступу — запитай користувача.
+If not found or no access — ask the user.
 
-Запиши: `VERSION = 2.x | 3.x | 4.x`
+Record: `VERSION = 2.x | 3.x | 4.x`
 
-| Версія | Шаблони | Кодстайл | Примітки |
-|--------|---------|----------|----------|
-| 2.x | `.tpl` (PHP) | PSR-2 | Старий синтаксис |
-| 3.x | `.twig` | PSR-2 | Найпоширеніший |
-| 4.x | `.twig` | PSR-12 | Новий namespace |
+| Version | Templates | Code style | Notes |
+|---------|-----------|------------|-------|
+| 2.x | `.tpl` (PHP) | PSR-2 | Legacy syntax |
+| 3.x | `.twig` | PSR-2 | Most common |
+| 4.x | `.twig` | PSR-12 | Namespaces |
 
-Документація шару view у [`view.md`](view.md) — **лише Twig**. `.tpl` (2.x) — легасі; міграцію на Twig не робимо без явної задачі.
+View layer docs in [`view.md`](view.md) cover **Twig only**. `.tpl` (2.x) is legacy; do not migrate to Twig without an explicit task.
 
 ---
 
-## Архітектура OpenCart
+## OpenCart architecture
 
-OpenCart використовує **MVC(L)** — Model, View, Controller, Language.
+OpenCart uses **MVC(L)** — Model, View, Controller, Language.
 
 ```
-catalog/                  ← фронтенд (магазин для покупців)
+catalog/                  ← storefront (customers)
   controller/
   model/
   view/
   language/
 
-admin/                    ← адмінка (для менеджерів)
+admin/                    ← admin (managers)
   controller/
   model/
   view/
   language/
 
 system/
-  library/                ← бібліотеки (з обережністю — див. system-library.md)
-  engine/                 ← ядро MVC (НЕ ЧІПАТИ)
-  storage/                ← кеш, логи, сесії (НЕ ЧІПАТИ, в blocklist)
+  library/                ← libraries (careful — see system-library.md)
+  engine/                 ← MVC core (DO NOT TOUCH)
+  storage/                ← cache, logs, sessions (DO NOT TOUCH, blocklist)
 ```
 
 ---
 
-## Cactus — стандарт кастомного коду
+## Cactus — standard for custom code
 
-**Cactus** — патерн для всього нового кастомного коду. Ніколи не змішувати з ядром OC.
+**Cactus** is the pattern for all new custom code. Never mix it into OC core.
 
-### Catalog (фронтенд)
+### Catalog (storefront)
 ```
 catalog/controller/cactus/[name].php
 catalog/model/cactus/[name].php
-catalog/view/theme/[тема]/template/cactus/[name].twig
+catalog/view/theme/[theme]/template/cactus/[name].twig
 catalog/language/[locale]/cactus/[name].php
 ```
 
-### Admin (адмінка)
-Адмін-модулі Cactus реєструються як розширення OC:
+### Admin
+Admin Cactus modules register as OC extensions:
 ```
 admin/controller/extension/module/cactus/[name].php
 admin/model/extension/module/cactus/[name].php
 admin/view/template/extension/module/cactus/[name].twig
 admin/language/[locale]/extension/module/cactus/[name].php
 ```
-Маршрут: `extension/module/cactus/[name]`
+Route: `extension/module/cactus/[name]`
 
 
-### Dev / Debug (тільки локально)
+### Dev / debug (local only)
 ```
 catalog/controller/cactus/dev/
-catalog/controller/cactus/dev/scripts/   ← одноразові скрипти зміни даних
+catalog/controller/cactus/dev/scripts/   ← one-off data scripts
 ```
 
 ---
 
-## OCMOD статус
+## OCMOD status
 
-Запитай або визнач: `OCMOD_MERGED = yes | no`
+Ask or detect: `OCMOD_MERGED = yes | no`
 
-**OCMOD_MERGED = no** — модифікації живуть в XML, застосовані копії в `system/storage/modification/`
-- Не правити файли в `system/storage/modification/` — вони перегенеруються
-- Зміни вносити в оригінальний `.ocmod.xml`
-- Після зміни XML — нагадати користувачу: Адмін → Extensions → Modifications → **Refresh**
+**OCMOD_MERGED = no** — modifications live in XML; applied copies in `system/storage/modification/`
+- Do not edit files in `system/storage/modification/` — they are regenerated
+- Change the original `.ocmod.xml`
+- After XML changes — remind the user: Admin → Extensions → Modifications → **Refresh**
 
-**OCMOD_MERGED = yes** — модифікації злиті напряму в файли ядра
-- Правити файли напряму
-- Позначати такі файли в `ai-map.md` як "модифіковане ядро"
+**OCMOD_MERGED = yes** — modifications merged into core files
+- Edit files directly
+- Mark such files in `ai-map.md` as "modified core"
 
 ---
 
-## Завантаження компонентів
+## Loading components
 
 ```php
-// OK: правильно
+// OK: correct
 $this->load->model('catalog/product');
 $this->load->library('session');
 $this->load->language('catalog/product');
 
-// НЕ можна:
+// NOT allowed:
 include('...');
 require('...');
 ```
 
 ---
 
-## База даних — базові правила
+## Database — basics
 
-- Завжди `$this->db->escape()` для всіх вхідних даних
-- Префікс таблиць через `DB_PREFIX`, ніколи не хардкодити `oc_`
-- Запити — тільки в моделях, ніколи в контролерах
-- При будь-якій зміні структури БД → записати в `migration.php` (див. model.md)
-
----
-
-## Контролер — типова роль у стилі OpenCart (**новий** код)
-
-Правила нижче — для **нового** коду (Cactus тощо). **Легасі не переписуємо**, якщо користувач **явно** не просить.
-
-**Це не бізнес-логіка і не SQL.** У контролері нормально:
-
-- `$this->load->language`, `$this->load->model`, `$this->load->library` та інші завантажувачі;
-- виклик **однієї** релевантної моделі: отримати дані для виводу, передати в модель дані на збереження тощо;
-- збір `$data` для Twig: прості `foreach`, підстановка URL зображень, breadcrumbs, заголовки;
-- `$this->load->controller('common/header')` / `footer` / `column_left` і `$this->load->view(...)`.
-
-**Неприпустимо:** ганяти результат **послідовно через кілька моделей** («модель A → у модель B → у модель C») в рамках одного сценарію. Таку координацію **зводити до однієї моделі** (один вхідний виклик з контролера) або явно розмежувати в задачі — без «конвеєра» в контролері.
-
-Деталі структури контролера — [`controller.md`](controller.md); шаблони — [`view.md`](view.md).
+- Always `$this->db->escape()` for string input
+- Table prefix via `DB_PREFIX`, never hardcode `oc_`
+- Queries — in models only, never in controllers
+- Any DB schema change → record in `migration.php` (see model.md)
 
 ---
 
-## ЗАБОРОНЕНО (глобально для всього OC)
+## Controller — typical role in OpenCart style (**new** code)
 
-- `oc_event` — не використовувати якщо користувач явно не просить
-- `include` / `require` для компонентів OC — тільки `$this->load->`
-- Хардкодити префікс `oc_` — тільки `DB_PREFIX`
-- **Бізнес-логіка, SQL, складні агрегації** — у **моделі** (див. [`model.md`](model.md)), не в контролері
-- Підключати моделі з `admin/` в контролерах `catalog/` і навпаки
-- Правити `system/engine/` — ніколи
-- Правити `system/storage/` — ніколи (в blocklist)
-- `var_dump`, `print_r`, `echo` для дебагу в продакшн коді
+Rules below are for **new** code (Cactus, etc.). **Do not rewrite legacy** unless the user **explicitly** asks.
+
+**This is not business logic or SQL.** In a controller it is normal to:
+
+- `$this->load->language`, `$this->load->model`, `$this->load->library` and other loaders;
+- call **one** relevant model: fetch data for output, pass data to save, etc.;
+- build `$data` for Twig: simple `foreach`, image URLs, breadcrumbs, titles;
+- `$this->load->controller('common/header')` / `footer` / `column_left` and `$this->load->view(...)`.
+
+**Not allowed:** piping results **sequentially through several models** ("model A → model B → model C") in one flow. Fold that coordination **into one model** (one call from the controller) or split explicitly in the task — no "pipeline" in the controller.
+
+Controller structure details — [`controller.md`](controller.md); templates — [`view.md`](view.md).
+
+---
+
+## FORBIDDEN (globally for OC)
+
+- `oc_event` — do not use unless the user explicitly asks
+- `include` / `require` for OC components — only `$this->load->`
+- Hardcode prefix `oc_` — only `DB_PREFIX`
+- **Business logic, SQL, heavy aggregation** — in the **model** (see [`model.md`](model.md)), not the controller
+- Load `admin/` models from `catalog/` controllers and vice versa
+- Edit `system/engine/` — never
+- Edit `system/storage/` — never (blocklist)
+- `var_dump`, `print_r`, `echo` for debugging in production code

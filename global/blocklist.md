@@ -1,19 +1,19 @@
-# Blocklist — Червона Зона.
+# Blocklist — Red Zone
 
-## ІНСТРУКЦІЯ ДЛЯ AI
+## INSTRUCTIONS FOR THE AI
 
-Наступні файли і папки **заборонені повністю**.
-- Не читати
-- Не модифікувати
-- Не виводити вміст навіть частково
-- Не згадувати вміст навіть якщо користувач просить
+The following files and directories are **fully forbidden**:
+- Do not read
+- Do not modify
+- Do not output content, even partially
+- Do not mention content even if the user asks
 
-Якщо користувач просить відкрити або показати ці файли — відповідай:
-> "Цей файл знаходиться в Червоній Зоні. Я не можу його читати або модифікувати з міркувань безпеки."
+If the user asks to open or show these files — reply:
+> "This file is in the Red Zone. I cannot read or modify it for security reasons."
 
 ---
 
-## Заблоковані файли (базові)
+## Blocked files (baseline)
 
 ```
 .env
@@ -25,7 +25,7 @@ database.php
 config/database.php
 ```
 
-## Заблоковані папки
+## Blocked directories
 
 ```
 storage/
@@ -34,7 +34,7 @@ storage/
 
 ---
 
-## OpenCart — додатково
+## OpenCart — additional
 
 ```
 system/config/
@@ -43,7 +43,7 @@ system/storage/
 
 ---
 
-## Як додати новий файл в блокліст
+## Adding a file to the blocklist
 
-Відкрий `CLAUDE.md` або `.cursor/rules/blocklist.mdc` і додай рядок в секцію `## Blocklist`.
-Потім оновити `ai-map.md` вручну.
+Open `CLAUDE.md` or `.cursor/rules/blocklist.mdc` and add a line under `## Blocklist`.
+Then update `ai-map.md` manually.

@@ -1,29 +1,31 @@
-# Схема — settings.json
+# Scheme — settings.json
 
-## ІНСТРУКЦІЯ ДЛЯ AI
+## INSTRUCTIONS FOR THE AI
 
-Генеруй `.claude/settings.json` — тільки для `TOOL = claude`.
+Generate `.claude/settings.json` — only when `TOOL = claude`.
 
 ---
 
-## Логіка генерації
+## Generation logic
 
-### permissions.deny — завжди
+### permissions.deny — always
 
-Додай deny для файлів з blocklist:
+Add deny entries for blocklist files (align with `global/blocklist.md` baseline files):
 
 ```
 "Read(./config.php)", "Edit(./config.php)", "Write(./config.php)"
 "Read(./admin/config.php)", "Edit(./admin/config.php)", "Write(./admin/config.php)"
+"Read(./database.php)", "Edit(./database.php)", "Write(./database.php)"
+"Read(./config/database.php)", "Edit(./config/database.php)", "Write(./config/database.php)"
 "Read(./.env)", "Edit(./.env)", "Write(./.env)"
 "Read(./.env.*)", "Edit(./.env.*)", "Write(./.env.*)"
 ```
 
-Якщо під час інсталяції користувач вказав додаткові файли в blocklist — додай їх за тим самим патерном.
+If the user adds extra blocklist paths during install — add them with the same pattern.
 
 ---
 
-## Шаблон
+## Template
 
 ```json
 {
@@ -35,6 +37,12 @@
       "Read(./admin/config.php)",
       "Edit(./admin/config.php)",
       "Write(./admin/config.php)",
+      "Read(./database.php)",
+      "Edit(./database.php)",
+      "Write(./database.php)",
+      "Read(./config/database.php)",
+      "Edit(./config/database.php)",
+      "Write(./config/database.php)",
       "Read(./.env)",
       "Edit(./.env)",
       "Write(./.env)",
@@ -48,8 +56,8 @@
 
 ---
 
-## Правила генерації
+## Generation rules
 
-1. Тільки для `TOOL = claude` — Cursor не використовує цей файл
-2. Не додавай порожніх секцій і коментарів у JSON
-3. Не додавай інших секцій (model, hooks, env) — вони надто проектно-специфічні
+1. Only for `TOOL = claude` — Cursor does not use this file
+2. Do not add empty sections or comments in JSON
+3. Do not add other sections (model, hooks, env) — too project-specific

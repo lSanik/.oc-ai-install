@@ -1,10 +1,10 @@
 # OpenCart — Admin
 
-## Загальне
+## General
 
-Адмінка (`admin/`) — захищена зона для менеджерів і адміністраторів. Всі маршрути потребують `user_token`.
+Admin (`admin/`) is a protected area for managers and administrators. All routes require `user_token`.
 
-Структура файлів кастомного адмін-модуля:
+Custom admin module file layout:
 
 ```
 admin/controller/extension/module/cactus/[name].php
@@ -13,60 +13,60 @@ admin/view/template/extension/module/cactus/[name].twig
 admin/language/[locale]/extension/module/cactus/[name].php
 ```
 
-Маршрут: `extension/module/cactus/[name]`
+Route: `extension/module/cactus/[name]`
 
 ---
 
-## Реєстрація модуля як розширення
+## Registering the module as an extension
 
-Після створення модуля — нагадати користувачу:
-1. Адмін → Extensions → Extensions → тип "Modules" → знайти і встановити `cactus/[name]`
-2. Або: System → Users → User Groups → Administrator → додати **access** і **modify** для `extension/module/cactus/[name]`
+After creating the module — remind the user:
+1. Admin → Extensions → Extensions → type "Modules" → find and install `cactus/[name]`
+2. Or: System → Users → User Groups → Administrator → add **access** and **modify** for `extension/module/cactus/[name]`
 
 ---
 
-## Налаштування (Settings)
+## Settings
 
 ```php
-// Зберегти налаштування модуля
+// Save module settings
 $this->load->model('setting/setting');
 $this->model_setting_setting->editSetting('cactus_mymodule', $this->request->post);
 
-// Читати в будь-якому місці OC
+// Read anywhere in OC
 $value = $this->config->get('cactus_mymodule_some_key');
 
-// Або через модель
+// Or via model
 $settings = $this->model_setting_setting->getSetting('cactus_mymodule');
 ```
 
-Ключі налаштувань — завжди з префіксом модуля: `cactus_[name]_[key]`.
+Setting keys — always prefixed with the module: `cactus_[name]_[key]`.
 
 ---
 
-## Меню в адмінці
+## Admin menu
 
-Додавання пункту меню через `admin/language/[locale]/extension/module/cactus/[name].php`:
+Adding a menu item via `admin/language/[locale]/extension/module/cactus/[name].php`:
 
 ```php
 <?php
-// Якщо модуль потребує власного пункту в меню
-// → використовувати OC Events або стандартний механізм модулів
-// → не хардкодити в шаблон ядра
+// If the module needs its own menu entry
+// → use OC Events or the standard module mechanism
+// → do not hardcode into core templates
 ```
 
-Для простих модулів доступ через: Extensions → Modules → встановлений модуль.
+Simple modules: Extensions → Modules → installed module.
 
 ---
 
-## Permissions (права доступу)
+## Permissions
 
 ```php
-// Перевірка в контролері перед дією
+// Check in controller before action
 if (!$this->user->hasPermission('modify', 'extension/module/cactus_mymodule')) {
     $this->error['warning'] = $this->language->get('error_permission');
 }
 
-// Перевірка на читання
+// Read permission
 if (!$this->user->hasPermission('access', 'extension/module/cactus_mymodule')) {
     $this->response->redirect($this->url->link('common/dashboard', 'user_token=' . $this->session->data['user_token'], true));
 }
@@ -76,39 +76,39 @@ if (!$this->user->hasPermission('access', 'extension/module/cactus_mymodule')) {
 
 ## user_token
 
-Кожен URL в адмінці повинен містити `user_token`:
+Every admin URL must include `user_token`:
 
 ```php
-// Генерація URL
+// Build URL
 $this->url->link('extension/module/cactus_mymodule', 'user_token=' . $this->session->data['user_token'], true);
 
-// Передача в Twig
+// Pass to Twig
 $data['action'] = $this->url->link($this->route, 'user_token=' . $this->session->data['user_token'], true);
 $data['cancel'] = $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=module', true);
 ```
 
 ---
 
-## Сесії та flash-повідомлення
+## Sessions and flash messages
 
 ```php
-// Встановити success повідомлення перед redirect
+// Set success before redirect
 $this->session->data['success'] = $this->language->get('text_success');
 $this->response->redirect($this->url->link($this->route, 'user_token=' . $this->session->data['user_token'], true));
 
-// У _buildData() прочитати і очистити
+// In _buildData() read and clear
 $data['success'] = isset($this->session->data['success']) ? $this->session->data['success'] : '';
 unset($this->session->data['success']);
 ```
 
 ---
 
-## Стандартна структура admin контролера
+## Standard admin controller structure
 
-Детальний приклад — у `controller.md` (розділ "Admin контролер").
+Full example — `controller.md` (section "Admin controller").
 
-Коротко:
-- `index()` — головний метод: валідація POST → зберегти → redirect; або buildData → view
-- `_validate()` — private метод перевірки
-- `_buildData()` — private метод збору даних для Twig
-- Breadcrumbs — завжди: Dashboard → назва модуля
+Short:
+- `index()` — main: validate POST → save → redirect; or buildData → view
+- `_validate()` — private validation
+- `_buildData()` — private data for Twig
+- Breadcrumbs — always: Dashboard → module title

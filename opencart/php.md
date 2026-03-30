@@ -1,21 +1,21 @@
 # OpenCart — PHP
 
-## Версія та стандарти
+## Version and standards
 
-| OC версія | PHP | Стандарт | Type hints |
-|-----------|-----|----------|-----------|
-| 2.x | 5.6 / 7.x | PSR-2 | Обережно, не скрізь |
-| 3.x | 7.x | PSR-2 | Рекомендовано |
-| 4.x | 8.x | PSR-12 | Обов'язково |
+| OC version | PHP | Standard | Type hints |
+|------------|-----|----------|------------|
+| 2.x | 5.6 / 7.x | PSR-2 | Use carefully |
+| 3.x | 7.x | PSR-2 | Recommended |
+| 4.x | 8.x | PSR-12 | Required |
 
-Визнач версію PHP (`PHP =`) і дотримуйся відповідного стандарту. Якщо невідомо — **запитай**.
+Detect PHP version (`PHP =`) and follow the matching standard. If unknown — **ask**.
 
 ---
 
 ## Type hints (PHP 7+)
 
 ```php
-// Параметри і повернення — тільки в новому коді (cactus)
+// Parameters and return types — new code (cactus) only
 public function getProduct(int $product_id): array {
     // ...
 }
@@ -25,50 +25,50 @@ public function updatePrice(int $product_id, float $price): void {
 }
 
 public function findBySlug(string $slug): ?array {
-    // ... повертає масив або null
+    // ... returns array or null
 }
 ```
 
-**Легасі код без задачі — не чіпати, type hints не додавати.**
+**Legacy code without a task — leave alone; do not add type hints.**
 
 ---
 
 ## Null coalescing (PHP 7+)
 
 ```php
-// Писати:
+// Write:
 $val = isset($array['key']) ? $array['key'] : 'default';
 
-// Замість:
+// Instead of:
 $val = $array['key'] ?? 'default';
 
-Ніколи не використовуй ??
+Never use ??
 
-// Але в OC 2.x / PHP 5.6 — тільки isset() варіант
+// In OC 2.x / PHP 5.6 — isset() only
 ```
 
 ---
 
-## Масиви
+## Arrays
 
 ```php
-// Короткий синтаксис — завжди (PHP 5.4+)
+// Short syntax — always (PHP 5.4+)
 $data = [];
 $ids  = [1, 2, 3];
 
-// Не використовувати array()
-$data = array();  // застаріло
+// Do not use array()
+$data = array();  // outdated
 ```
 
 ---
 
-## Рядки
+## Strings
 
 ```php
-// Конкатенація vs інтерполяція — обидва варіанти ОК
+// Concatenation vs interpolation — both OK
 $sql = "SELECT * FROM `" . DB_PREFIX . "product` WHERE product_id = '" . (int)$id . "'";
 
-// Багаторядковий SQL — через heredoc або відступи. Цей варіант бажаний
+// Multi-line SQL — heredoc or indentation. This style is preferred
 $sql = "
     SELECT p.product_id, p.price
         FROM `" . DB_PREFIX . "product` p
@@ -78,12 +78,12 @@ $sql = "
 
 ---
 
-## Обробка помилок в OC
+## Error handling in OC
 
-OC не використовує exceptions системно в 2.x/3.x. В новому коді (cactus):
+OC does not use exceptions systematically in 2.x/3.x. In new code (cactus):
 
 ```php
-// В моделі — кидай exception при критичній помилці
+// In model — throw on critical failure
 public function processPayment(array $data): array {
     if (empty($data['order_id'])) {
         throw new \InvalidArgumentException('order_id required');
@@ -91,7 +91,7 @@ public function processPayment(array $data): array {
     // ...
 }
 
-// В контролері — лови і повертай як error
+// In controller — catch and return as error
 try {
     $result = $this->model_cactus_payment->processPayment($data);
     $json['success'] = true;
@@ -102,50 +102,50 @@ try {
 
 ---
 
-## Константи OC
+## OC constants
 
 ```php
-// Завжди доступні в контексті OC
-DIR_APPLICATION   // шлях до catalog/ або admin/
-DIR_SYSTEM        // шлях до system/
-DIR_IMAGE         // шлях до image/
-HTTP_SERVER       // базовий URL
-DB_PREFIX         // префікс таблиць (ніколи не хардкодити 'oc_')
-VERSION           // версія OC
+// Always available in OC context
+DIR_APPLICATION   // path to catalog/ or admin/
+DIR_SYSTEM        // path to system/
+DIR_IMAGE         // path to image/
+HTTP_SERVER       // base URL
+DB_PREFIX         // table prefix (never hardcode 'oc_')
+VERSION           // OC version
 ```
 
 ---
 
-## Заборонено
+## Forbidden
 
 ```php
-// Прямий доступ до суперглобальних
+// Direct superglobals
 $_POST['key']   // → $this->request->post['key']
 $_GET['key']    // → $this->request->get['key']
 $_SESSION       // → $this->session->data
 
-// Прямий echo/print (крім скриптів dev/). Бажано використання echo
+// Raw echo/print (except dev scripts). Prefer controlled output
 echo $variable;
 
 
-//Дебаг через функції vd(),dd(); Vd Виведе красивий дамп. dd - die dump
+// Debug via vd(), dd(); vd() — pretty dump; dd — dump then die
 vd($qwe,$ewq);
-dd($zxc,$gds);//Буде вивід як в vd(), потім die()
+dd($zxc,$gds);// same as vd() then die()
 
-// include/require для OC компонентів
+// include/require for OC components
 include DIR_APPLICATION . 'model/catalog/product.php';
 ```
 
 ---
 
-## Анонімні функції (closures)
+## Anonymous functions (closures)
 
-**Заборонено.** Не використовувати `function(...) use (...)` в коді.
+**Forbidden.** Do not use `function(...) use (...)` in code.
 
-Якщо без анонімної функції технічно не обійтись — **зупинись і запитай користувача** перед написанням коду.
+If you truly cannot avoid it — **stop and ask the user** before writing.
 
 ```php
-// ПОГАНО — анонімна функція
+// BAD — closure
 $this->session->data[$key] = array_filter(
     $this->session->data[$key],
     function ($t) use ($now, $window) {
@@ -153,7 +153,7 @@ $this->session->data[$key] = array_filter(
     }
 );
 
-// ДОБРЕ — логіка в окремому методі класу
+// GOOD — logic in a class method
 $this->session->data[$key] = $this->filterByWindow(
     $this->session->data[$key], $now, $window
 );

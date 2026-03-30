@@ -1,15 +1,15 @@
 # OpenCart — MySQL
 
-## Базові правила (повтор з model.md — для контексту)
+## Basics (repeat from model.md — for context)
 
-- Всі запити — тільки в моделях
-- `$this->db->escape()` для всіх рядкових вхідних даних
-- `(int)`, `(float)` — для числових
-- `DB_PREFIX` замість хардкоду `oc_`
+- All queries — in models only
+- `$this->db->escape()` for string input
+- `(int)`, `(float)` for numbers
+- `DB_PREFIX` instead of hardcoded `oc_`
 
 ---
 
-## JOIN патерни
+## JOIN patterns
 
 ```php
 // INNER JOIN
@@ -22,7 +22,7 @@ $query = $this->db->query("
     ORDER BY o.date_added DESC
 ");
 
-// LEFT JOIN (коли правий запис може бути відсутній)
+// LEFT JOIN (right row may be missing)
 $query = $this->db->query("
     SELECT p.product_id, p.price, pd.name
     FROM `" . DB_PREFIX . "product` p
@@ -34,7 +34,7 @@ $query = $this->db->query("
 
 ---
 
-## Фільтрація та пагінація
+## Filtering and pagination
 
 ```php
 public function getOrders(array $data = []): array {
@@ -65,16 +65,16 @@ public function getOrders(array $data = []): array {
 }
 
 public function getTotalOrders(array $data = []): int {
-    // Той самий WHERE, але SELECT COUNT(*)
+    // Same WHERE but SELECT COUNT(*)
     $sql = "SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "order` o WHERE o.order_status_id > '0'";
-    // ... ті самі фільтри без ORDER і LIMIT
+    // ... same filters without ORDER/LIMIT
     return (int)$this->db->query($sql)->row['total'];
 }
 ```
 
 ---
 
-## Агрегації
+## Aggregations
 
 ```php
 // SUM
@@ -100,10 +100,10 @@ $query = $this->db->query("
 
 ---
 
-## Структура таблиць OC (типова)
+## Typical OC table structure
 
 ```sql
--- Сутність + опис (мультимовність)
+-- Entity + description (multilingual)
 CREATE TABLE `oc_cactus_item` (
     `item_id`   int(11) NOT NULL AUTO_INCREMENT,
     `sort_order` int(3) NOT NULL DEFAULT '0',
@@ -121,36 +121,37 @@ CREATE TABLE `oc_cactus_item_description` (
 
 ---
 
-## Індекси
+## Indexes
 
 ```sql
--- Додавати індекс якщо поле використовується в WHERE або JOIN часто
+-- Add index if column is often used in WHERE or JOIN
 ALTER TABLE `oc_cactus_item` ADD INDEX `status` (`status`);
 ALTER TABLE `oc_cactus_log` ADD INDEX `date_added` (`date_added`);
 ```
 
-**Будь-яка зміна структури БД → записати в `migration.php`** (формат — в `model.md`).
+**Any schema change → record in `migration.php`** (format — `model.md`).
 
 ---
 
-## LIKE пошук
+## LIKE search
 
 ```php
-// % з обох сторін — повний пошук
+// % both sides — full search
 " AND name LIKE '%" . $this->db->escape($search) . "%'"
 
-// Тільки початок — швидший, використовує індекс
+// Prefix only — faster, can use index
 " AND name LIKE '" . $this->db->escape($search) . "%'"
 ```
 
 ---
 
-## Заборонено
+## Forbidden
 
 ```sql
--- Хардкод префіксу
-FROM `oc_product`          -- заборонено
-FROM `" . DB_PREFIX . "product"  -- правильно
+-- Hardcoded prefix
+FROM `oc_product`          -- forbidden
+FROM `" . DB_PREFIX . "product"  -- correct
 
--- Сирі дані без escape
-WHERE name = '$name'       -- заборонено
+-- Raw data without escape
+WHERE name = '$name'       -- forbidden
+```

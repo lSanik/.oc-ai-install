@@ -1,87 +1,87 @@
-# Warning Zone — Жовта Зона
+# Warning Zone — Yellow Zone
 
-## ІНСТРУКЦІЯ ДЛЯ AI
+## INSTRUCTIONS FOR THE AI
 
-Warning Zone — файли які **можна читати**, але **правити тільки з явного дозволу** користувача.
+Warning Zone — files you **may read**, but **edit only with explicit permission** from the user.
 
-**Алгоритм при роботі з Warning Zone файлом:**
+**Workflow when touching a Warning Zone file:**
 
-1. Визнач що файл є в Warning Zone
-2. Перед будь-якою правкою виведи попередження:
+1. Confirm the file is listed in the Warning Zone
+2. Before any edit, output a warning:
 
 ```
- WARNING ZONE: [шлях до файлу]
-Причина: [причина з ai-map.md]
-Можливі наслідки: [що може зламатись]
+ WARNING ZONE: [path to file]
+Reason: [reason from ai-map.md]
+Possible impact: [what could break]
 
-Продовжити? (так / ні)
+Continue? (yes / no)
 ```
 
-3. Чекай явного підтвердження користувача
-4. Після правки — нагадай перевірити функціональність вручну
+3. Wait for explicit user confirmation
+4. After editing — remind them to verify behaviour manually
 
 ---
 
-## Як генерувати Warning Zone при інсталяції
+## Generating the Warning Zone during install
 
-Під час блоку 8 інсталяції — задай питання:
+During installer block 8 — ask:
 
-> Чи є файли які можна читати, але правити тільки з обережністю?
+> Are there files that can be read but should only be edited with care?
 >
-> Для кожного файлу вкажи:
-> - Шлях до файлу
-> - Що може зламатись якщо щось піде не так
+> For each file provide:
+> - Path to the file
+> - What could break if something goes wrong
 >
-> **Приклади:**
+> **Examples:**
 > ```
 > system/library/seopro.php
-> → Відповідає за ЧПУ всього сайту.
->   Баг тут = SEO проєкту під загрозою.
->   Симптом: всі URL сайту перестають працювати.
+> → Handles SEO URLs for the whole site.
+>   Bug here = project SEO at risk.
+>   Symptom: site URLs stop working.
 >
-> catalog/model/catalog/product.php (модифіковане ядро)
-> → Базова модель товарів, модифікована під кастомні поля.
->   Баг тут = товари не відображаються або не зберігаються.
+> catalog/model/catalog/product.php (modified core)
+> → Core product model, modified for custom fields.
+>   Bug here = products not shown or not saved.
 > ```
 
 ---
 
-## Структура запису в ai-map.md
+## Record structure in ai-map.md
 
 ```markdown
 ## Warning Zone
 
-| Файл | Причина | Можливі наслідки |
-|------|---------|-----------------|
-| system/library/seopro.php | SEO-модуль, відповідає за ЧПУ | Всі URL сайту перестають працювати |
-| catalog/model/catalog/product.php | Модифіковане ядро, кастомні поля | Товари не відображаються |
+| File | Reason | Possible impact |
+|------|--------|-----------------|
+| system/library/seopro.php | SEO module, handles URLs | All site URLs stop working |
+| catalog/model/catalog/product.php | Modified core, custom fields | Products not displayed |
 ```
 
 ---
 
-## Категорії Warning Zone
+## Warning Zone categories
 
-### SEO-критичні
-Файли від яких залежить структура URL, мета-теги, sitemap.
-Баг = падіння позицій або недоступність сторінок.
+### SEO-critical
+Files that URL structure, meta tags, or sitemap depend on.
+Bug = ranking loss or pages unavailable.
 
-### Модифіковане ядро
-Файли ядра платформи які були змінені вручну.
-Баг = непередбачувана поведінка по всьому сайту.
+### Modified core
+Core platform files changed by hand.
+Bug = unpredictable behaviour across the site.
 
-### Платіжні інтеграції
-Файли які обробляють оплату або взаємодіють з платіжними API.
-Баг = втрата транзакцій або помилки при оплаті.
+### Payment integrations
+Files that process payments or talk to payment APIs.
+Bug = lost transactions or checkout errors.
 
-### Критичні бібліотеки
-Бібліотеки від яких залежать десятки модулів.
-Баг = каскадні помилки по всьому сайту.
+### Critical libraries
+Libraries many modules depend on.
+Bug = cascading errors across the site.
 
-### Лог-файли та журнал змін БД (читати можна, не редагувати без команди)
-Файли які є джерелом правди для людини; виконання навмисно вимкнене де потрібно.
-Приклад: `migration.php` в корені OC-проєкту.
-- Після `<?php` — перший виконуваний рядок `die(0);` / `die();`; 
-- Лише **факти** змін архітектури БД: поля, таблиці, індекси, `ALTER` тощо — для розуміння, що змінити на проді
-- Повна модель схеми для ШІ ведеться в **`.ai-oc-install/map/db_mapping.md`**; при зміні схеми оновлюють обидва артефакти
-- PHP парсить файл цілком — тримати SQL у рядках, уникати синтаксичних помилок поза шапкою
-- AI читає для контексту; не змінює записи без явної команди користувача
+### Log files and DB change journal (read OK; do not edit without instruction)
+Human source of truth; execution intentionally disabled where needed.
+Example: `migration.php` in the OC project root.
+- After `<?php` — first executable line is `die(0);` / `die();`
+- Only **facts** of DB architecture changes: fields, tables, indexes, `ALTER`, etc. — to know what to apply on production
+- Full schema model for the AI lives in **`.ai-oc-install/map/db_mapping.md`**; on schema change, update both artifacts
+- PHP parses the whole file — keep SQL inside string literals; avoid syntax errors outside the header block
+- AI reads for context; does not change entries without explicit user command

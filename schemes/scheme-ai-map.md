@@ -1,128 +1,128 @@
-# Схема — ai-map.md
+# Scheme — ai-map.md
 
-## ІНСТРУКЦІЯ ДЛЯ AI
+## INSTRUCTIONS FOR THE AI
 
-`ai-map.md` — карта відхилень від стандарту і кастомного коду проєкту.
-Не описує стандартні файли платформи — тільки те що унікальне для цього проєкту.
+`ai-map.md` maps deviations from standard and custom project code.
+It does not describe standard platform files — only what is unique to this project.
 
-Заповнюй на основі даних з інсталяції: **Блок 5** (тема та мови), **6** (структура проєкту), **7** (БД), **8** (Warning Zone — таблиця в шаблоні нижче), **9** (додаткові особливості — секція нижче).
+Fill from install data: **Block 5** (theme and languages), **6** (structure), **7** (DB), **8** (Warning Zone — table in template below), **9** (extra notes — section below).
 
 ---
 
-## ШАБЛОН
+## TEMPLATE
 
 ```markdown
-# AI Map — [назва проєкту]
+# AI Map — [project name]
 
-Карта кастомного коду і відхилень від стандарту.
-Читати перед початком роботи з будь-яким файлом проєкту.
+Map of custom code and deviations from standard.
+Read before working on any project file.
 
 ---
 
 ## Blocklist
-Не читати, не чіпати:
+Do not read or touch:
 - config.php, admin/config.php, .env
-[специфічні для проєкту]
+[project-specific]
 
 ---
 
 ## Warning Zone
 
-| Файл | Причина | Наслідки при баги |
-|------|---------|------------------|
-| [шлях] | [причина] | [наслідки] |
+| File | Reason | Impact if buggy |
+|------|--------|-----------------|
+| [path] | [reason] | [impact] |
 
-[Завжди додавати для OpenCart / ocStore:]
-| `migration.php` | Журнал ручних змін схеми БД для проду; після `<?php` — `die(0);`/`die();`, завжди 2-й рядок (порожній або коментар). Модель БД для ШІ — у `.ai-oc-install/map/db_mapping.md`. | Не редагувати без явної команди; читати для контексту. |
+[Always add for OpenCart / ocStore:]
+| `migration.php` | Manual DB schema log for prod; after `<?php` — `die(0);`/`die();`, then blank line or log comment. AI DB model — `.ai-oc-install/map/db_mapping.md`. | Edit only on explicit command; read for context. |
 
-[Якщо порожньо: "Немає на цей момент."]
-
----
-
-## Safe Zone — Кастомний код
-
-### Cactus модулі (OpenCart / ocStore)
-
-**Catalog (фронтенд):**
-| Файл | Призначення |
-|------|-------------|
-| catalog/controller/cactus/[назва].php | [опис] |
-| catalog/model/cactus/[назва].php | [опис] |
-
-**Admin (адмінка):**
-| Файл | Призначення |
-|------|-------------|
-| admin/controller/cactus/[назва].php | [опис] |
-
-**Бібліотеки:**
-| Файл | Призначення | Warning Zone |
-|------|-------------|-------------|
-| system/library/seopro.php | ЧПУ і SEO-URL | WZ: так |
-| system/library/[інші кастомні] | [опис] | |
+[If empty: "None at this time."]
 
 ---
 
-## Модифіковане ядро
+## Safe Zone — Custom code
 
-[Якщо OCMOD_MERGED = yes або є прямі правки ядра:]
+### Cactus modules (OpenCart / ocStore)
 
-| Файл ядра | Що змінено | Чому | Warning Zone |
-|-----------|-----------|------|-------------|
-| [шлях] | [опис змін] | [причина] | WZ / — |
+**Catalog (storefront):**
+| File | Purpose |
+|------|---------|
+| catalog/controller/cactus/[name].php | [description] |
+| catalog/model/cactus/[name].php | [description] |
 
-[Якщо OCMOD_MERGED = no і немає прямих правок:]
-Ядро платформи не модифіковано напряму.
-Модифікації через OCMOD XML файли.
+**Admin:**
+| File | Purpose |
+|------|---------|
+| admin/controller/cactus/[name].php | [description] |
 
----
-
-## Frontend / Теми
-
-**Тема магазину:** catalog/view/theme/[назва]/
-- Кастомний CSS: [шлях або "стандартний"]
-- Кастомний JS: [шлях або "стандартний"]
-- Специфічні фічі каталогу: [перелік або "стандартні"]
-
-**Адмінка:**
-- Специфічні фічі адмінки: [перелік або "стандартні"]
+**Libraries:**
+| File | Purpose | Warning Zone |
+|------|---------|--------------|
+| system/library/seopro.php | SEO URLs | WZ: yes |
+| system/library/[other custom] | [description] | |
 
 ---
 
-## База даних
+## Modified core
 
-### Кастомні таблиці (не стандартні для платформи)
+[If OCMOD_MERGED = yes or direct core edits:]
 
-| Таблиця | Призначення | Пов'язані файли |
-|---------|-------------|----------------|
-| [назва] | [опис] | [controller/model] |
+| Core file | What changed | Why | Warning Zone |
+|-----------|--------------|-----|--------------|
+| [path] | [change summary] | [reason] | WZ / — |
 
-### Модифіковані стандартні таблиці
+[If OCMOD_MERGED = no and no direct edits:]
+Core not modified directly.
+Modifications via OCMOD XML files.
 
-| Таблиця | Додані поля | Причина |
-|---------|------------|---------|
-| [назва] | [поля] | [причина] |
+---
 
-[Якщо нічого: "Структура БД стандартна для платформи."]
+## Frontend / Themes
+
+**Store theme:** catalog/view/theme/[name]/
+- Custom CSS: [path or "default"]
+- Custom JS: [path or "default"]
+- Catalog-specific features: [list or "standard"]
+
+**Admin:**
+- Admin-specific features: [list or "standard"]
+
+---
+
+## Database
+
+### Custom tables (non-standard for the platform)
+
+| Table | Purpose | Related files |
+|-------|---------|---------------|
+| [name] | [description] | [controller/model] |
+
+### Modified standard tables
+
+| Table | Added fields | Reason |
+|-------|--------------|--------|
+| [name] | [fields] | [reason] |
+
+[If nothing: "DB structure is standard for the platform."]
 
 ### migration.php
-Файл у корені — **журнал змін схеми БД для людини** (що накатити на прод). **Першоджерело моделі БД для ШІ** — `.ai-oc-install/map/db_mapping.md` (один шлях для Claude і Cursor). При зміні схеми оновлюй обидва файли.
-Читати можна; редагувати `migration.php` — тільки за явною командою. На старому проєкті файл може вже існувати.
+Root file — **human schema change journal** (what to apply on prod). **Primary AI schema source** — `.ai-oc-install/map/db_mapping.md` (one path for Claude and Cursor). On schema change, update both.
+Readable; edit `migration.php` only on explicit command. May already exist on legacy projects.
 
 ---
 
-## Додаткові особливості
+## Additional notes
 
-[Дані з Блоку 9 — легасі, специфічні обмеження, бізнес-правила]
+[From Block 9 — legacy, constraints, business rules]
 
-[Якщо нічого: "Немає специфічних особливостей."]
+[If nothing: "No specific extra notes."]
 ```
 
 ---
 
-## Правила заповнення
+## Fill rules
 
-1. Описуй тільки кастомне і відхилення — не переписуй документацію платформи
-2. Warning Zone — завжди присутня секція (навіть якщо порожня)
-3. Модифіковане ядро — критично важлива секція для OC-проєктів
-4. Оновлюється вручну після задачі яка змінює структуру
-5. Посилання на мапінг БД — завжди **`.ai-oc-install/map/db_mapping.md`**; `project.md` / `ai-map.md` — у каталозі обраного інструмента (`.claude/` або `.cursor/`) згідно `TOOL`
+1. Describe only custom parts and deviations — do not duplicate platform docs
+2. Warning Zone — section always present (even if empty)
+3. Modified core — critical for OC projects
+4. Update manually after tasks that change structure
+5. DB mapping — primary link **`.ai-oc-install/map/db_mapping.md`**; optional deep schema per table: **`.ai-oc-install/map/db_tables/<table>.php`**; table index: **`db_map.php`**. `project.md` / `ai-map.md` — under chosen tool dir (`.claude/` or `.cursor/`) per `TOOL`

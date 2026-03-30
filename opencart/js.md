@@ -1,25 +1,25 @@
 # OpenCart — JavaScript
 
-## Загальне
+## General
 
-OpenCart 2.x / 3.x використовує **jQuery**. Підключати інші фреймворки без явної потреби — не треба.
+OpenCart 2.x / 3.x uses **jQuery**. Do not add other frameworks without explicit need.
 
 ---
 
-## Додавання скрипта через контролер
+## Adding scripts from the controller
 
 ```php
-// Catalog — у методі index() або _buildData()
+// Catalog — in index() or _buildData()
 $this->document->addScript('catalog/view/theme/' . $this->config->get('config_theme') . '/javascript/cactus/my-script.js');
 
 // Admin
 $this->document->addScript('view/javascript/cactus/my-admin-script.js');
 
-// Стиль
+// Style
 $this->document->addStyle('catalog/view/theme/' . $this->config->get('config_theme') . '/stylesheet/cactus/my-style.css');
 ```
 
-Або безпосередньо у Twig в кінці файлу:
+Or directly in Twig at the end:
 
 ```twig
 <script src="{{ 'catalog/view/theme/..../javascript/cactus/my-script.js' | raw }}"></script>
@@ -27,7 +27,7 @@ $this->document->addStyle('catalog/view/theme/' . $this->config->get('config_the
 
 ---
 
-## AJAX до OC контролера
+## AJAX to OC controllers
 
 ### Catalog
 
@@ -41,16 +41,16 @@ $.ajax({
     dataType: 'json',
     success: function(json) {
         if (json.error) {
-            // обробка помилки
+            // handle error
         }
         if (json.success) {
-            // обробка успіху
+            // handle success
         }
     }
 });
 ```
 
-### Admin (з user_token)
+### Admin (with user_token)
 
 ```javascript
 $.ajax({
@@ -69,22 +69,22 @@ $.ajax({
 });
 ```
 
-`userToken` — передавати з контролера через `$data['user_token']`.
+Pass `userToken` from the controller via `$data['user_token']`.
 
 ---
 
-## Розташування JS файлів
+## JS file locations
 
 ```
-catalog/view/theme/[тема]/javascript/cactus/   ← кастомний JS каталогу
-admin/view/javascript/cactus/                  ← кастомний JS адмінки
+catalog/view/theme/[theme]/javascript/cactus/   ← custom catalog JS
+admin/view/javascript/cactus/                  ← custom admin JS
 ```
 
 ---
 
-## Правила
+## Rules
 
-- Не писати JS inline в PHP — тільки у Twig або окремому файлі
-- Не підключати зовнішні CDN без явної потреби
-- `var_dump`, `console.log` прибирати з продакшн коду
-- jQuery — завжди через `$` або `jQuery`, не конфліктує з іншими бібліотеками через OC wrapper
+- Do not write JS inline in PHP — only in Twig or a separate file
+- Do not load external CDNs without explicit need
+- Remove `var_dump`, `console.log` from production code
+- jQuery — use `$` or `jQuery`; OC wrapper avoids conflicts with other libs
