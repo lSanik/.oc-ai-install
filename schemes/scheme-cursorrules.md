@@ -5,11 +5,10 @@
 Cursor використовує файли в `.cursor/rules/` з розширенням `.mdc`.
 Кожен файл — окреме правило з метаданими.
 
-Генеруй чотири файли:
+Генеруй три файли:
 1. `.cursor/rules/main.mdc` — головний контекст проєкту
 2. `.cursor/rules/blocklist.mdc` — червона зона
 3. `.cursor/rules/warning-zone.mdc` — жовта зона
-4. `.cursor/rules/commands.mdc` — команди /scope, /review, /update_ai_doc
 
 ---
 
@@ -26,43 +25,30 @@ alwaysApply: true
 Ти дуже професійний і досвідчений розробник Opencart системи.
 
 @.cursor/project.md
+@.cursor/ai-map.md
+@.cursor/code-style.md
 
 @.ai-oc-install/opencart/main.md
-@.ai-oc-install/opencart/controller.md
-@.ai-oc-install/opencart/model.md
-@.ai-oc-install/opencart/view.md
-@.ai-oc-install/opencart/language.md
-@.ai-oc-install/opencart/system-library.md
-@.ai-oc-install/opencart/js.md
-@.ai-oc-install/opencart/css.md
-@.ai-oc-install/opencart/php.md
-@.ai-oc-install/opencart/mysql.md
-@.ai-oc-install/opencart/admin.md
-@.ai-oc-install/opencart/catalog.md
 
 @.ai-oc-install/global/blocklist.md
-@.ai-oc-install/global/commands.md
+
+**Перед виконанням і аналізом задачі** обов’язково прочитай з `.ai-oc-install/opencart/` **лише** файли, релевантні поточній задачі (не підвантажуй усі `.md` одразу). Наприклад: PHP — `php.md`; JS — `js.md`; CSS — `css.md`; контролери / моделі / шаблони — `controller.md`, `model.md`, `view.md`; мови — `language.md`; system — `system-library.md`; БД — `mysql.md` і **`.ai-oc-install/map/db_mapping.md`**; адмінка — `admin.md`; вітрина — `catalog.md`.
 
 ## Priority
 Правила цього workspace мають пріоритет над глобальними user rules Cursor.
-Зокрема: обмеження shared hosting (`CAN_RUN_COMMANDS = no`) важливіші за будь-які глобальні інструкції виконувати команди автоматично.
 
 ## AI Files
 
 PERSISTENT — ніколи не видаляти і не перезаписувати при reinstall:
 - `.cursor/project.md` — дані проєкту, warning zone, обмеження
 - `.cursor/ai-map.md` — карта кастомних модулів і відхилень від стандарту
-- `.cursor/ai-task.md` — поточна задача
-- `.cursor/ai-changelog.md` — журнал змін
-- `.cursor/ai-decisions.md` — архітектурні рішення
-- `.cursor/db_mapping.md` — опис кастомних таблиць БД
-- `.cursor/map/` — PHP файли таблиць, згенеровані getMap.php
+- `.ai-oc-install/map/db_mapping.md` — опис / DDL кастомних таблиць БД (спільно для Claude і Cursor)
+- `.ai-oc-install/map/*.php` — PHP файли таблиць від getMap.php (за наявності)
 
 REGENERATABLE — перезаписуються при reinstall:
 - `.cursor/rules/main.mdc` — цей файл
 - `.cursor/rules/blocklist.mdc`
 - `.cursor/rules/warning-zone.mdc`
-- `.cursor/rules/commands.mdc`
 - `.cursor/code-style.md`
 ```
 
@@ -126,19 +112,3 @@ alwaysApply: true
 
 Генеруй **новий формат** (`.mdc`).
 Якщо користувач має старий Cursor — повідом що краще оновитись.
-
----
-
-## ШАБЛОН: .cursor/rules/commands.mdc
-
-Текст команд **не дублюй тут** — єдине джерело: `.ai-oc-install/global/commands.md`.
-
-Згенеруй файл:
-
-1. YAML frontmatter (як у інших `.mdc` у цій схемі):
-   - `description: Команди AI для управління задачами і документацією.`
-   - `alwaysApply: true`
-2. Після frontmatter — заголовок `# Commands` (без підзаголовка «Команди AI» з джерела).
-3. Далі встав вміст `global/commands.md` **без** першого рядка (`# Commands — Команди AI`), починаючи з `## ІНСТРУКЦІЯ ДЛЯ AI` і **до кінця** розділу `## Важливо про середовище` включно. Розділ `## Розбиття для Claude Code` у `commands.mdc` **не копіюй**.
-
-У згенерованому проєкті **головний файл правил** — `.cursor/rules/main.mdc` (це вже зазначено в `commands.md` у списку інструментів).

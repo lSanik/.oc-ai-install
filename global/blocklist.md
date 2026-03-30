@@ -46,4 +46,4 @@ system/storage/
 ## Як додати новий файл в блокліст
 
 Відкрий `CLAUDE.md` або `.cursor/rules/blocklist.mdc` і додай рядок в секцію `## Blocklist`.
-Потім виконай `/update_ai_doc` щоб синхронізувати документацію.
+Потім оновити `ai-map.md` вручну.

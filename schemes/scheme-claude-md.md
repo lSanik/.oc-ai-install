@@ -3,7 +3,7 @@
 ## ІНСТРУКЦІЯ ДЛЯ AI
 
 Використовуй цю схему для генерації `CLAUDE.md`.
-`CLAUDE.md` — тонкий файл-точка входу. Всі правила і патерни OpenCart підключаються через @imports з `.ai-oc-install/`.
+`CLAUDE.md` — тонкий файл-точка входу. Правила платформи OpenCart лежать у `.ai-oc-install/opencart/`; у цей файл підключається лише **`main.md`** плюс blocklist — решту файлів з `opencart/` робочий асистент відкриває **вибірково** під задачу.
 Проєктні дані (версія, середовище, обмеження) зберігаються в `project.md` (PERSISTENT).
 
 ---
@@ -16,22 +16,14 @@
 Ти дуже професійний і досвідчений розробник Opencart системи.
 
 @.claude/project.md
+@.claude/ai-map.md
+@.claude/code-style.md
 
 @.ai-oc-install/opencart/main.md
-@.ai-oc-install/opencart/controller.md
-@.ai-oc-install/opencart/model.md
-@.ai-oc-install/opencart/view.md
-@.ai-oc-install/opencart/language.md
-@.ai-oc-install/opencart/system-library.md
-@.ai-oc-install/opencart/js.md
-@.ai-oc-install/opencart/css.md
-@.ai-oc-install/opencart/php.md
-@.ai-oc-install/opencart/mysql.md
-@.ai-oc-install/opencart/admin.md
-@.ai-oc-install/opencart/catalog.md
 
 @.ai-oc-install/global/blocklist.md
-@.ai-oc-install/global/commands.md
+
+**Перед виконанням і аналізом задачі** обов’язково прочитай з `.ai-oc-install/opencart/` **лише** файли, релевантні поточній задачі (не підвантажуй усі `.md` одразу). Наприклад: PHP — `php.md`; JS — `js.md`; CSS — `css.md`; контролери / моделі / шаблони — `controller.md`, `model.md`, `view.md`; мови — `language.md`; system — `system-library.md`; БД — `mysql.md` і **`.ai-oc-install/map/db_mapping.md`**; адмінка — `admin.md`; вітрина — `catalog.md`.
 
 ---
 
@@ -40,24 +32,20 @@
 PERSISTENT — ніколи не видаляти і не перезаписувати при reinstall:
 - `.claude/project.md` — дані проєкту, warning zone, обмеження
 - `.claude/ai-map.md` — карта кастомних модулів і відхилень від стандарту
-- `.claude/ai-task.md` — поточна задача
-- `.claude/ai-changelog.md` — журнал змін
-- `.claude/ai-decisions.md` — архітектурні рішення
-- `.claude/db_mapping.md` — опис кастомних таблиць БД
-- `.claude/map/` — PHP файли таблиць, згенеровані getMap.php
+- `.ai-oc-install/map/db_mapping.md` — опис / DDL кастомних таблиць БД (спільно для Claude і Cursor)
+- `.ai-oc-install/map/*.php` — PHP файли таблиць від getMap.php (за наявності)
 
 REGENERATABLE — перезаписуються при reinstall:
 - `.claude/CLAUDE.md` — цей файл
 - `.claude/code-style.md` — правила коду
-- `.claude/commands/` — команди AI
 ```
 
 ---
 
 ## Правила генерації
 
-1. `CLAUDE.md` — тільки @imports і секція AI Files. Не копіювати правила сюди.
-2. `project.md` — генерується окремо за схемою `scheme-project.md`
-3. `code-style.md` — генерується за схемою `scheme-code-style.md`
-4. Команди — генеруються за інструкцією в `global/commands.md` (розділ «Розбиття для Claude Code»)
+1. `CLAUDE.md` — тільки @imports, абзац про вибіркове читання та секція AI Files. Не копіювати правила з `opencart/` сюди.
+2. При генерації **не** читай вміст `.ai-oc-install/opencart/*.md` — відтвори шаблон `@`-рядків як вище.
+3. `project.md` — генерується окремо за схемою `scheme-project.md`
+4. `code-style.md` — генерується за схемою `scheme-code-style.md`
 5. Не додавати секцій яких немає в шаблоні

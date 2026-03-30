@@ -4,13 +4,25 @@
 
 Ти працюєш з проєктом на OpenCart / ocStore.
 
-**При старті завжди читай всі файли платформи:**
-- `.ai-oc-install/opencart/main.md` ← цей файл
-- `.ai-oc-install/opencart/controller.md`
-- `.ai-oc-install/opencart/model.md`
-- `.ai-oc-install/opencart/view.md`
-- `.ai-oc-install/opencart/language.md`
-- `.ai-oc-install/opencart/system-library.md`
+Інструкції платформи лежать у каталозі **`.ai-oc-install/opencart/`**. **Не** завантажуй усі `.md` з цієї папки одразу: **перед аналізом і виконанням задачі** відкривай **лише** потрібні файли.
+
+**Мапінг БД** (DDL / опис таблиць, PHP з getMap) — завжди в **`.ai-oc-install/map/`** (`db_mapping.md` та за потреби `*.php`). Для SQL-конвенцій і запитів додатково читай [`mysql.md`](mysql.md).
+
+### Задача → які файли читати
+
+| Контекст задачі | Файли в `.ai-oc-install/opencart/` |
+|-----------------|-------------------------------------|
+| Загальний огляд, версія, Cactus, OCMOD | `main.md` (цей файл) |
+| Контролери, маршрути, `$this->load` | `controller.md` |
+| Моделі, SQL у шарі даних | `model.md`, `mysql.md` |
+| Twig / шаблони | `view.md` |
+| Мовні файли, переклади | `language.md` |
+| `system/library`, ядро | `system-library.md` |
+| JS фронту / адмінки | `js.md` |
+| Стилі | `css.md` |
+| Синтаксис PHP, обмеження проєкту | `php.md` |
+| Адмінка (extension, форми) | `admin.md`, плюс за потреби `controller.md`, `view.md` |
+| Вітрина (каталог) | `catalog.md`, плюс за потреби `controller.md`, `view.md` |
 
 ---
 
