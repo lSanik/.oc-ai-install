@@ -1,0 +1,62 @@
+Claude — global assistant instructions (light)
+Language: respond in English or Ukrainian; default to Ukrainian unless the user asks otherwise.
+
+Project rules
+- Prefer project instructions in .claude/CLAUDE.md when present; follow them.
+- On the first meaningful task in a repo, if .claude/CLAUDE.md is missing, warn once and suggest creating it for project-specific guidance. Do not block trivial tasks unless the user asks for strict mode.
+
+MCP / IDE (when MCP is available)
+- For tasks that touch project files, use configured MCP tools when they help (open edited files in the IDE, symbol/search instead of blind grep where appropriate).
+- If MCP is not connected — skip all MCP calls, send one short notice, proceed normally. Do not retry.
+- Laravel only: if composer.json requires laravel/framework or the user explicitly says Laravel, use Laravel-specific MCP tools only if they exist in the workspace.
+
+Code quality and scope
+- Do not run bulk "fix all problems" / "apply all quick fixes" on the whole project unless the user explicitly asks.
+- Do not refactor or "clean up" unrelated files without separate explicit approval.
+- Only analyze or fix issues in files that are in scope for the current task.
+- New public methods/functions: one short line stating purpose.
+- Before non-trivial loops, raw SQL, non-trivial if/else branching, or non-obvious calls: one short line explaining what/why.
+- Magic numbers/strings: prefer named constants or private properties; avoid unexplained literals.
+- Prefer early returns over deep nesting.
+- Avoid comments on obvious code.
+
+Closures (anonymous functions)
+- Default: named methods for readability and reuse.
+- Closures allowed only when short and local (e.g. Laravel route definitions; simple Collection map/filter/each with 1–3 obvious lines).
+- If a closure grows past about 4–5 lines, extract to a named private method.
+- If project rules forbid or restrict closures, follow the stricter project rule.
+
+Terminal
+- Do not run php ... from the terminal unless the user explicitly asks.
+- Laravel: do not run php artisan ... unless the user explicitly asks; if artisan is required, ask the user to run it manually.
+- For non-Laravel projects, do not assume artisan applies.
+
+Architecture
+- Follow existing project structure and patterns; new folders/packages only when justified by the task.
+- If a better approach conflicts with current architecture, suggest first; implement only after approval.
+- Prefer extending existing patterns over introducing parallel ones.
+
+Task complexity and workflow
+- Trivial: tiny fix or typo — proceed; no formal plan unless asked.
+- Medium: a few files, no DB/architecture change — short plan in chat; confirm if the user wants confirmation or changes are broad.
+- Complex: many files, DB, new features, or architecture — short plan in chat; optional plan file; confirm before large edits unless the user says go ahead / no confirmation needed.
+
+Order: assess complexity -> plan if needed -> confirm per rules above -> execute with tight scope -> brief report of what changed.
+
+Plan files (optional, for complex work)
+- Location: .claude/plans/ in the project root (or team-agreed folder).
+- Name: {short_name}_{YYYY-MM-DD}.md — short_name about 10 characters or less, lowercase, underscores.
+- Done: e.g. .claude/plans/done/ when the user marks complete.
+- Include: Goal, Steps, Files (full paths), Database (if any), Approach.
+
+Important
+- Think before acting on medium and complex tasks.
+- Do not modify files outside the requested scope.
+- If requirements are unclear, ask; do not assume.
+
+vendor/
+node_modules/
+storage/logs/
+bootstrap/cache/
+.git/
+*.lock
