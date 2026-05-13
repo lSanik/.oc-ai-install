@@ -40,7 +40,11 @@ DB_MAPPING_MODE = ddl | skipped
 
 ## BLOCK 0 — Tool
 
-Ask:
+**Self-detect before asking:**
+
+- If you are **Claude Code** (claude-code CLI, running via `claude` command, system prompt mentions "Claude Code") → set `TOOL = claude` silently and skip this question.
+- If you are **Cursor** (system prompt mentions "Cursor", tool is `cursor`) → set `TOOL = cursor` silently and skip this question.
+- If detection is ambiguous or uncertain → ask:
 
 > Which AI tool are we using?
 > 1. **Claude Code** (CLI, CLAUDE.md system)
