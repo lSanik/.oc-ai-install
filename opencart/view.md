@@ -161,13 +161,23 @@ If unknown — ask the user.
 
 ### Passing data from controller to view
 
+**3.x:** do NOT assign language strings to `$data` — Twig resolves them directly. Pass only computed data:
+
 ```php
-// Controller
-$data['heading_title'] = $this->language->get('heading_title');
-$data['products']      = $this->model_cactus_products->getProducts();
-$data['action']        = $this->url->link('cactus/products/save', '', true);
+// Controller (3.x)
+$this->load->language('cactus/products');
+$data['products'] = $this->model_cactus_products->getProducts();
+$data['action']   = $this->url->link('cactus/products/save', '', true);
 
 $this->response->setOutput($this->load->view('cactus/products', $data));
+```
+
+**2.x:** language strings must be in `$data`:
+
+```php
+// Controller (2.x only)
+$data['heading_title'] = $this->language->get('heading_title');
+$data['products']      = $this->model_cactus_products->getProducts();
 ```
 
 ```twig

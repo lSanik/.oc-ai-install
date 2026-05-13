@@ -170,6 +170,9 @@ After creating a new admin module — remind the user to add permissions:
 
 ## Language variables (version-specific rule)
 
+> **Before applying rules below** — check `VERSION` in `.claude/project.md` (field `Platform`). Rules differ between 2.x and 3.x.
+
+
 ### OpenCart / ocStore 3.x — load only, do NOT assign to $data
 
 In version 3.x the Twig template receives all language strings directly through the language object — **no need** to extract each variable into `$data`.

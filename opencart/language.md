@@ -55,14 +55,19 @@ $_['column_action']    = 'Action';
 // Load
 $this->load->language('cactus/currency_recalc');           // catalog
 $this->load->language('extension/module/cactus_currency'); // admin
+```
 
-// Pass specific strings to view
+**3.x (ocStore / OpenCart 3.x):** just load — do NOT assign language strings to `$data`. Twig resolves them directly through the language loader.
+
+**2.x:** assign each needed key to `$data` manually:
+
+```php
+// 2.x only
 $data['heading_title'] = $this->language->get('heading_title');
 $data['button_save']   = $this->language->get('button_save');
-
-// Or pass everything at once (large forms)
-// — then view has all keys from the file
 ```
+
+See full version rule → `controller.md` (section "Language variables").
 
 ### In view (Twig)
 

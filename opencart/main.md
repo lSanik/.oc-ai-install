@@ -26,18 +26,28 @@ Platform instructions live under **`.ai-oc-install/opencart/`**. **Do not** load
 
 ---
 
-## Detecting version
+## Detecting version and platform variant
 
-First determine OC version. Read `index.php` in the project root:
+First check `project.md` — version and platform are already stored there after install.
+
+If `project.md` is missing — read `index.php` in the project root:
 
 ```php
-// look for a line like:
+// VERSION is the engine version — present in both OpenCart and ocStore:
 define('VERSION', '3.0.3.7');
+
+// VERSION_CORE is the ocStore marker — absent in standard OpenCart:
+define('VERSION_CORE', 'ocStore');
+define('VERSION_BUILD', '0002');
 ```
 
-If not found or no access — ask the user.
+- `VERSION_CORE` present and equals `'ocStore'` → **ocStore** (platform = opencart, note ocStore in context)
+- `VERSION_CORE` absent → standard **OpenCart**
+- `VERSION` value → engine version for both
 
-Record: `VERSION = 2.x | 3.x | 4.x`
+If `index.php` is unreadable — ask the user.
+
+Record: `VERSION = 2.x | 3.x | 4.x`, `OCSTORE = yes | no`
 
 | Version | Templates | Code style | Notes |
 |---------|-----------|------------|-------|

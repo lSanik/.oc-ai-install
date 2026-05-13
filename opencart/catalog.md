@@ -67,12 +67,13 @@ $this->cart->getTotal();
 
 ```php
 // Current language
-$language_id = (int)$this->config->get('config_language_id');
-$language_code = $this->session->data['language'] ?? $this->config->get('config_language');
+$language_id   = (int)$this->config->get('config_language_id');
+$language_code = isset($this->session->data['language']) ? $this->session->data['language'] : $this->config->get('config_language');
 
 // Load language file
 $this->load->language('cactus/my_page');
-$data['heading_title'] = $this->language->get('heading_title');
+// 3.x: stop here — Twig resolves language strings directly, no $data assignments needed
+// 2.x only: $data['heading_title'] = $this->language->get('heading_title');
 ```
 
 ---

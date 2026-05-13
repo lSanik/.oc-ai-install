@@ -21,6 +21,7 @@ Filled once during install. Updated only when the user explicitly asks.
 ## Install Config
 
 - Platform: OpenCart / ocStore [VERSION]
+- OCSTORE: [yes | no]
 - PHP: [PHP]
 - OCMOD_MERGED: [yes | no | unknown]
 - Theme: [THEME]
