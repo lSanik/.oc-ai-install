@@ -186,6 +186,20 @@ $data['text_edit']     = $this->language->get('text_edit');
 
 In the Twig template use `{{ heading_title }}` — it resolves through the language loader automatically.
 
+**Exception — inline language use inside computed structures is still allowed:**
+
+```php
+// CORRECT even in 3.x — language is used inline inside a computed array, not extracted as a standalone $data key
+$data['breadcrumbs'] = [
+    ['text' => $this->language->get('text_home'), 'href' => $this->url->link(...)],
+    ['text' => $this->language->get('heading_title'), 'href' => $this->url->link(...)],
+];
+
+// CORRECT — error/success are computed values, not plain language extractions
+$data['error_warning'] = isset($this->error['warning']) ? $this->error['warning'] : '';
+$data['success']       = isset($this->session->data['success']) ? $this->session->data['success'] : '';
+```
+
 ### OpenCart 2.x — assign to $data as usual
 
 In version 2.x (`.tpl` templates) language variables **must** be passed through `$data`:
