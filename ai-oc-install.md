@@ -54,13 +54,26 @@ Record: `TOOL = claude | cursor`
 
 ---
 
-## BLOCK 1 — Platform (OpenCart / ocStore)
+## BLOCK 1 — Platform (OpenCart / ocStore) + Version
 
 This installer targets **OpenCart** or **ocStore** only.
 
-Ask:
+**Self-detect — read `index.php` in the project root (single read covers both blocks):**
 
-> Confirm: is the project **OpenCart** or **ocStore**? (if ocStore — still use `PLATFORM = opencart`; you may mention ocStore in notes)
+```
+define('VERSION', '3.0.3.7');        ← engine version, always present
+define('VERSION_CORE', 'ocStore');   ← present only in ocStore
+define('VERSION_BUILD', '0002');     ← present only in ocStore
+```
+
+Detection rules:
+- `VERSION_CORE` exists and equals `'ocStore'` → `OCSTORE = yes`, note in project.md
+- `VERSION_CORE` absent or not `'ocStore'` → `OCSTORE = no` (standard OpenCart)
+- `VERSION` value → `VERSION = X.X.X.X` (use major: `2` / `3` / `4`)
+- `PLATFORM = opencart` in both cases
+
+If `index.php` is unreadable — ask:
+> Is this OpenCart or ocStore? Which version? (2.x / 3.x / 4.x)
 
 **Do not read** the contents of `.ai-oc-install/opencart/` during installation. Below are **canonical paths** for substitution into generated rules (see `scheme-claude-md.md` / `scheme-cursorrules.md`):
 
@@ -77,20 +90,20 @@ Ask:
 - `.ai-oc-install/opencart/admin.md`
 - `.ai-oc-install/opencart/catalog.md`
 
-Record: `PLATFORM = opencart`
+Record: `PLATFORM = opencart`, `OCSTORE = yes | no`, `VERSION = ...`
 
 ---
 
-## BLOCK 2 — Version
+## BLOCK 2 — PHP and OCMOD
 
-First try to detect the version yourself — read `index.php` in the project root, look for `define('VERSION', ...)`.
+Version is already detected in BLOCK 1. Ask only what remains:
 
-If not found or no access — ask:
-> Which OpenCart version? (2.x / 3.x / 4.x)
-> Which PHP?
-> Are OCMOD changes merged into core or kept separate? (OCMOD_MERGED = yes / no)
+> Which PHP version is used on the server?
+> Are OCMOD changes merged into core files or kept as separate `.ocmod.xml`? (yes = merged / no = separate)
 
-Record: `VERSION = ...`, `PHP = ...`, `OCMOD_MERGED = yes | no | unknown`
+If the user says "don't know" for PHP — record `PHP = unknown`.
+
+Record: `PHP = ...`, `OCMOD_MERGED = yes | no | unknown`
 
 ---
 

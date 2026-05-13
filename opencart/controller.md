@@ -168,6 +168,35 @@ After creating a new admin module — remind the user to add permissions:
 
 ---
 
+## Language variables (version-specific rule)
+
+### OpenCart / ocStore 3.x — load only, do NOT assign to $data
+
+In version 3.x the Twig template receives all language strings directly through the language object — **no need** to extract each variable into `$data`.
+
+```php
+// CORRECT for 3.x — load and stop
+$this->load->language('extension/module/cactus_currency');
+
+// WRONG for 3.x — unnecessary manual extraction
+$data['heading_title'] = $this->language->get('heading_title');
+$data['text_edit']     = $this->language->get('text_edit');
+// ...and so on for every key — do not do this
+```
+
+In the Twig template use `{{ heading_title }}` — it resolves through the language loader automatically.
+
+### OpenCart 2.x — assign to $data as usual
+
+In version 2.x (`.tpl` templates) language variables **must** be passed through `$data`:
+
+```php
+$this->load->language('extension/module/cactus_currency');
+$data['heading_title'] = $this->language->get('heading_title');
+```
+
+---
+
 ## Shared rules (admin and catalog)
 
 ### FORBIDDEN in controller
