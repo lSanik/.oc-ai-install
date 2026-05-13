@@ -7,10 +7,10 @@ Catalog (`catalog/`) is the public storefront. Available to shoppers without log
 Custom code:
 
 ```
-catalog/controller/cactus/[name].php
-catalog/model/cactus/[name].php
-catalog/view/theme/[THEME]/template/cactus/[name].twig
-catalog/language/[locale]/cactus/[name].php
+catalog/controller/{CUSTOM_DIR}/[name].php
+catalog/model/{CUSTOM_DIR}/[name].php
+catalog/view/theme/[THEME]/template/{CUSTOM_DIR}/[name].twig
+catalog/language/[locale]/{CUSTOM_DIR}/[name].php
 ```
 
 ---
@@ -18,11 +18,11 @@ catalog/language/[locale]/cactus/[name].php
 ## Routing
 
 ```
-index.php?route=cactus/my_page         → catalog/controller/cactus/my_page.php → index()
-index.php?route=cactus/my_page/process → catalog/controller/cactus/my_page.php → process()
+index.php?route={CUSTOM_DIR}/my_page         → catalog/controller/{CUSTOM_DIR}/my_page.php → index()
+index.php?route={CUSTOM_DIR}/my_page/process → catalog/controller/{CUSTOM_DIR}/my_page.php → process()
 ```
 
-With SEO URLs enabled: `/my-seo-slug` → `route=cactus/my_page` (via `url_alias`).
+With SEO URLs enabled: `/my-seo-slug` → `route={CUSTOM_DIR}/my_page` (via `url_alias`).
 
 ---
 
@@ -30,7 +30,7 @@ With SEO URLs enabled: `/my-seo-slug` → `route=cactus/my_page` (via `url_alias
 
 ```php
 // Get SEO URL for custom route
-$url = $this->url->link('cactus/my_page', 'param=value', true);
+$url = $this->url->link('{CUSTOM_DIR}/my_page', 'param=value', true);
 // → OC substitutes SEO alias when present
 
 // You do not need to add SEO alias for the route manually in code!
@@ -71,7 +71,7 @@ $language_id   = (int)$this->config->get('config_language_id');
 $language_code = isset($this->session->data['language']) ? $this->session->data['language'] : $this->config->get('config_language');
 
 // Load language file
-$this->load->language('cactus/my_page');
+$this->load->language('{CUSTOM_DIR}/my_page');
 // 3.x: stop here — Twig resolves language strings directly, no $data assignments needed
 // 2.x only: $data['heading_title'] = $this->language->get('heading_title');
 ```
@@ -98,7 +98,7 @@ $this->response->redirect($this->url->link('checkout/cart'));
 ```php
 // Auth check
 if (!$this->customer->isLogged()) {
-    $this->session->data['redirect'] = $this->url->link('cactus/my_page', '', true);
+    $this->session->data['redirect'] = $this->url->link('{CUSTOM_DIR}/my_page', '', true);
     $this->response->redirect($this->url->link('account/login', '', true));
 }
 
@@ -120,7 +120,7 @@ $data['breadcrumbs'] = [
     ],
     [
         'text' => $this->language->get('heading_title'),
-        'href' => $this->url->link('cactus/my_page'),
+        'href' => $this->url->link('{CUSTOM_DIR}/my_page'),
     ],
 ];
 ```

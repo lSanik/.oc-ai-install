@@ -10,19 +10,19 @@ OpenCart 2.x / 3.x uses **jQuery**. Do not add other frameworks without explicit
 
 ```php
 // Catalog — in index() or _buildData()
-$this->document->addScript('catalog/view/theme/' . $this->config->get('config_theme') . '/javascript/cactus/my-script.js');
+$this->document->addScript('catalog/view/theme/' . $this->config->get('config_theme') . '/javascript/{CUSTOM_DIR}/my-script.js');
 
 // Admin
-$this->document->addScript('view/javascript/cactus/my-admin-script.js');
+$this->document->addScript('view/javascript/{CUSTOM_DIR}/my-admin-script.js');
 
 // Style
-$this->document->addStyle('catalog/view/theme/' . $this->config->get('config_theme') . '/stylesheet/cactus/my-style.css');
+$this->document->addStyle('catalog/view/theme/' . $this->config->get('config_theme') . '/stylesheet/{CUSTOM_DIR}/my-style.css');
 ```
 
 Or directly in Twig at the end:
 
 ```twig
-<script src="{{ 'catalog/view/theme/..../javascript/cactus/my-script.js' | raw }}"></script>
+<script src="{{ 'catalog/view/theme/..../javascript/{CUSTOM_DIR}/my-script.js' | raw }}"></script>
 ```
 
 ---
@@ -33,7 +33,7 @@ Or directly in Twig at the end:
 
 ```javascript
 $.ajax({
-    url: 'index.php?route=cactus/my_module/ajaxMethod',
+    url: 'index.php?route={CUSTOM_DIR}/my_module/ajaxMethod',
     type: 'POST',
     data: {
         product_id: productId
@@ -54,7 +54,7 @@ $.ajax({
 
 ```javascript
 $.ajax({
-    url: 'index.php?route=extension/module/cactus_currency/ajaxMethod&user_token=' + userToken,
+    url: 'index.php?route=extension/module/{CUSTOM_DIR}_currency/ajaxMethod&user_token=' + userToken,
     type: 'POST',
     data: { key: value },
     dataType: 'json',
@@ -76,8 +76,8 @@ Pass `userToken` from the controller via `$data['user_token']`.
 ## JS file locations
 
 ```
-catalog/view/theme/[theme]/javascript/cactus/   ← custom catalog JS
-admin/view/javascript/cactus/                  ← custom admin JS
+catalog/view/theme/[theme]/javascript/{CUSTOM_DIR}/   ← custom catalog JS
+admin/view/javascript/{CUSTOM_DIR}/                   ← custom admin JS
 ```
 
 ---

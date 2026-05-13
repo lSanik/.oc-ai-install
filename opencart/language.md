@@ -5,8 +5,8 @@
 Language files are PHP arrays. One file per controller/module.
 
 ```
-catalog/language/[locale]/cactus/[name].php
-admin/language/[locale]/extension/module/cactus_[name].php
+catalog/language/[locale]/{CUSTOM_DIR}/[name].php
+admin/language/[locale]/extension/module/{CUSTOM_DIR}_[name].php
 ```
 
 Locales are set at install. Typical: `uk-ua`, `ru-ru`, `en-gb`.
@@ -53,8 +53,8 @@ $_['column_action']    = 'Action';
 
 ```php
 // Load
-$this->load->language('cactus/currency_recalc');           // catalog
-$this->load->language('extension/module/cactus_currency'); // admin
+$this->load->language('{CUSTOM_DIR}/currency_recalc');           // catalog
+$this->load->language('extension/module/{CUSTOM_DIR}_currency'); // admin
 ```
 
 **3.x (ocStore / OpenCart 3.x):** just load — do NOT assign language strings to `$data`. Twig resolves them directly through the language loader.
@@ -84,9 +84,9 @@ See full version rule → `controller.md` (section "Language variables").
 If the project is multilingual — create a file for **each** locale.
 
 ```
-admin/language/uk-ua/extension/module/cactus_currency.php  ← primary
-admin/language/ru-ru/extension/module/cactus_currency.php  ← if ru-ru exists
-admin/language/en-gb/extension/module/cactus_currency.php  ← if en-gb exists
+admin/language/uk-ua/extension/module/{CUSTOM_DIR}_currency.php  ← primary
+admin/language/ru-ru/extension/module/{CUSTOM_DIR}_currency.php  ← if ru-ru exists
+admin/language/en-gb/extension/module/{CUSTOM_DIR}_currency.php  ← if en-gb exists
 ```
 
 Project locales are set at install. If unknown — ask.

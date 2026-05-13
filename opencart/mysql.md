@@ -104,14 +104,14 @@ $query = $this->db->query("
 
 ```sql
 -- Entity + description (multilingual)
-CREATE TABLE `oc_cactus_item` (
+CREATE TABLE `oc_{CUSTOM_DIR}_item` (
     `item_id`   int(11) NOT NULL AUTO_INCREMENT,
     `sort_order` int(3) NOT NULL DEFAULT '0',
     `status`    tinyint(1) NOT NULL DEFAULT '1',
     PRIMARY KEY (`item_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `oc_cactus_item_description` (
+CREATE TABLE `oc_{CUSTOM_DIR}_item_description` (
     `item_id`     int(11) NOT NULL,
     `language_id` int(11) NOT NULL,
     `name`        varchar(255) NOT NULL,
@@ -125,8 +125,8 @@ CREATE TABLE `oc_cactus_item_description` (
 
 ```sql
 -- Add index if column is often used in WHERE or JOIN
-ALTER TABLE `oc_cactus_item` ADD INDEX `status` (`status`);
-ALTER TABLE `oc_cactus_log` ADD INDEX `date_added` (`date_added`);
+ALTER TABLE `oc_{CUSTOM_DIR}_item` ADD INDEX `status` (`status`);
+ALTER TABLE `oc_{CUSTOM_DIR}_log` ADD INDEX `date_added` (`date_added`);
 ```
 
 **Any schema change → record in `migration.php`** (format — `model.md`).

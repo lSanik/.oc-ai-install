@@ -7,7 +7,7 @@ Generate **one** file **`code-style.md`** under the chosen tool directory (as in
 - If `TOOL = claude` → `.claude/code-style.md`
 - If `TOOL = cursor` → `.cursor/code-style.md`
 
-In the **Project Installer** role **do not** read `.ai-oc-install/opencart/*` — build `code-style.md` **only** from this template. MVC / cactus / `migration.php` details are in `opencart/*.md` (working assistant reads them selectively).
+In the **Project Installer** role **do not** read `.ai-oc-install/opencart/*` — build `code-style.md` **only** from this template. MVC / custom folder / `migration.php` details are in `opencart/*.md` (working assistant reads them selectively).
 
 ---
 
@@ -30,7 +30,7 @@ Coding rules and refactor boundaries. Read together with the main rules file (`C
 ## Catalog and admin — no mixing
 
 - **Do not** call or load **admin** models/controllers from **catalog** code and vice versa. Separate contexts, separate entrypoints.
-- Shared logic — in **models** in the right area (`catalog/model/cactus/...` and `admin/model/...`) or in **system libraries** only when needed and aligned with Warning Zone / `ai-map.md`.
+- Shared logic — in **models** in the right area (`catalog/model/[CUSTOM_DIR]/...` and `admin/model/...`) or in **system libraries** only when needed and aligned with Warning Zone / `ai-map.md`.
 - No cross-zone `load->model` between admin and storefront.
 
 ---
@@ -46,14 +46,14 @@ Coding rules and refactor boundaries. Read together with the main rules file (`C
 ## Models, methods, and responsibility
 
 - Keep **balance**: do not split every method into its own file, but do not dump unrelated logic into one bucket.
-- A **new entity** (domain logic) — usually a **separate model** in the right zone (`catalog/model/cactus/...` or `admin/model/...`).
+- A **new entity** (domain logic) — usually a **separate model** in the right zone (`catalog/model/[CUSTOM_DIR]/...` or `admin/model/...`).
 - If the same entity gets a **separate layer** (e.g. another **API** shape) — logically a **separate model** for that layer, not one bloated generic model.
 - If one model covers **different domains** (e.g. both **products** and **orders**) — for **new** code split into **separate models**; do not rewrite legacy without a task.
 - Group methods by purpose (read, write, aggregates, etc.) within one model so files stay readable in OpenCart style.
 
 ---
 
-## Dev controllers (`catalog/controller/cactus/dev/`)
+## Dev controllers (`catalog/controller/[CUSTOM_DIR]/dev/`)
 
 - For **dev** scripts and one-off actions a **model is optional**: logic may live **in the controller** — that is what dev controllers are for.
 - Do not spread dev logic into production models unless it becomes permanent (then refactor per task scope).
@@ -101,7 +101,7 @@ Coding rules and refactor boundaries. Read together with the main rules file (`C
 ## Code and formatting (reminder)
 
 - In code files (`.php`, `.js`, **`.twig`**; legacy `.tpl` only if editing old templates, `.css`) **do not** add emoji, emoticons, or decorative symbols without explicit user request.
-- The rest: SQL escaping, `DB_PREFIX`, cactus paths, `migration.php` on DB changes — as in `opencart/` docs and the main rules file.
+- The rest: SQL escaping, `DB_PREFIX`, custom folder paths, `migration.php` on DB changes — as in `opencart/` docs and the main rules file.
 
 ---
 

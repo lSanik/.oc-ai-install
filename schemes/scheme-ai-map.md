@@ -41,18 +41,18 @@ Do not read or touch:
 
 ## Safe Zone — Custom code
 
-### Cactus modules (OpenCart / ocStore)
+### Custom plugin folder (OpenCart / ocStore)
 
 **Catalog (storefront):**
 | File | Purpose |
 |------|---------|
-| catalog/controller/cactus/[name].php | [description] |
-| catalog/model/cactus/[name].php | [description] |
+| catalog/controller/[CUSTOM_DIR]/[name].php | [description] |
+| catalog/model/[CUSTOM_DIR]/[name].php | [description] |
 
 **Admin:**
 | File | Purpose |
 |------|---------|
-| admin/controller/cactus/[name].php | [description] |
+| admin/controller/[CUSTOM_DIR]/[name].php | [description] |
 
 **Libraries:**
 | File | Purpose | Warning Zone |

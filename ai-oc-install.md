@@ -32,6 +32,7 @@ LANGUAGES =
 DEFAULT_LANG =
 OCMOD_MERGED =
 THEME =
+CUSTOM_DIR = my_custom
 WARNING_FILES = []
 DB_MAPPING_MODE = ddl | skipped
 ```
@@ -143,6 +144,21 @@ Ask:
 > Which languages are used? Which is default?
 
 Record: `THEME = ...`, `LANGUAGES = ...`, `DEFAULT_LANG = ...`
+
+---
+
+## BLOCK 5.5 — Custom plugin folder
+
+Ask:
+
+> What is the custom plugin folder name?
+> This is the folder where your own controllers, models, and views live
+> (e.g. `catalog/controller/**my_custom**/`, `admin/model/**my_custom**/`).
+> Default: **`my_custom`** — press Enter to keep, or type a different name.
+
+If the user says "don't know" or skips — record `CUSTOM_DIR = my_custom`.
+
+Record: `CUSTOM_DIR = ...`
 
 ---
 
@@ -260,6 +276,13 @@ After collecting all data — read the schemes and generate files.
 
 Take paths and `@` imports for `opencart/` and `map/` from **scheme templates** — **do not** read `.ai-oc-install/opencart/*.md` in the installer role.
 
+When generating from schemes, substitute all `[VARIABLE]` placeholders with the collected values:
+- `[CUSTOM_DIR]` → value of `CUSTOM_DIR`
+- `[THEME]` → value of `THEME`
+- `[VERSION]` → value of `VERSION`
+- `[PHP]` → value of `PHP`
+- `[ENV]`, `[LANGUAGES]`, `[DEFAULT_LANG]`, etc. → their respective values
+
 ### If `TOOL = claude`:
 
 Read: `.ai-oc-install/schemes/scheme-claude-md.md` and `.ai-oc-install/schemes/scheme-settings.md`
@@ -303,7 +326,7 @@ Generate under `.cursor/`:
 The AI checks each generated file:
 
 1. **CLAUDE.md / main.mdc** — AI intro line present? `@` to `project.md`, `ai-map.md`, `code-style.md`, **`@.ai-oc-install/opencart/main.md`**, `@.ai-oc-install/global/blocklist.md`? **No** bulk `@` on every file in `opencart/`? Explicit text: before a task, read from `.ai-oc-install/opencart/` **only** the `.md` files needed (PHP → `php.md`, JS/CSS → `js.md`/`css.md`, MVC → `controller.md`/`model.md`/`view.md`, DB → `mysql.md` + `.ai-oc-install/map/db_mapping.md` (+ optional `db_tables/<table>.php` / `db_map.php` when present), admin → `admin.md`, etc.)? **AI Files** section with PERSISTENT/REGENERATABLE split (Claude: includes **`settings.json`** in REGENERATABLE and matches `scheme-settings.md`)?
-2. **project.md** — all sections filled? Warning Zone (including migration.php)? Project Restrictions?
+2. **project.md** — all sections filled? `Custom folder` field present with actual `CUSTOM_DIR` value? Warning Zone (including migration.php)? Project Restrictions?
 3. **code-style.md** — aligned with `scheme-code-style.md`?
 4. **ai-map.md** — template includes DB section?
 5. **`.ai-oc-install/map/db_mapping.md`** — if `ddl`: DDL present or explicitly "none"; if `skipped` — explanation present?

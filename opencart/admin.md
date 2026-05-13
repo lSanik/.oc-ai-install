@@ -7,21 +7,21 @@ Admin (`admin/`) is a protected area for managers and administrators. All routes
 Custom admin module file layout:
 
 ```
-admin/controller/extension/module/cactus/[name].php
-admin/model/extension/module/cactus/[name].php
-admin/view/template/extension/module/cactus/[name].twig
-admin/language/[locale]/extension/module/cactus/[name].php
+admin/controller/extension/module/{CUSTOM_DIR}/[name].php
+admin/model/extension/module/{CUSTOM_DIR}/[name].php
+admin/view/template/extension/module/{CUSTOM_DIR}/[name].twig
+admin/language/[locale]/extension/module/{CUSTOM_DIR}/[name].php
 ```
 
-Route: `extension/module/cactus/[name]`
+Route: `extension/module/{CUSTOM_DIR}/[name]`
 
 ---
 
 ## Registering the module as an extension
 
 After creating the module — remind the user:
-1. Admin → Extensions → Extensions → type "Modules" → find and install `cactus/[name]`
-2. Or: System → Users → User Groups → Administrator → add **access** and **modify** for `extension/module/cactus/[name]`
+1. Admin → Extensions → Extensions → type "Modules" → find and install `{CUSTOM_DIR}/[name]`
+2. Or: System → Users → User Groups → Administrator → add **access** and **modify** for `extension/module/{CUSTOM_DIR}/[name]`
 
 ---
 
@@ -30,22 +30,22 @@ After creating the module — remind the user:
 ```php
 // Save module settings
 $this->load->model('setting/setting');
-$this->model_setting_setting->editSetting('cactus_mymodule', $this->request->post);
+$this->model_setting_setting->editSetting('{CUSTOM_DIR}_mymodule', $this->request->post);
 
 // Read anywhere in OC
-$value = $this->config->get('cactus_mymodule_some_key');
+$value = $this->config->get('{CUSTOM_DIR}_mymodule_some_key');
 
 // Or via model
-$settings = $this->model_setting_setting->getSetting('cactus_mymodule');
+$settings = $this->model_setting_setting->getSetting('{CUSTOM_DIR}_mymodule');
 ```
 
-Setting keys — always prefixed with the module: `cactus_[name]_[key]`.
+Setting keys — always prefixed with the module: `{CUSTOM_DIR}_[name]_[key]`.
 
 ---
 
 ## Admin menu
 
-Adding a menu item via `admin/language/[locale]/extension/module/cactus/[name].php`:
+Adding a menu item via `admin/language/[locale]/extension/module/{CUSTOM_DIR}/[name].php`:
 
 ```php
 <?php
@@ -62,12 +62,12 @@ Simple modules: Extensions → Modules → installed module.
 
 ```php
 // Check in controller before action
-if (!$this->user->hasPermission('modify', 'extension/module/cactus_mymodule')) {
+if (!$this->user->hasPermission('modify', 'extension/module/{CUSTOM_DIR}_mymodule')) {
     $this->error['warning'] = $this->language->get('error_permission');
 }
 
 // Read permission
-if (!$this->user->hasPermission('access', 'extension/module/cactus_mymodule')) {
+if (!$this->user->hasPermission('access', 'extension/module/{CUSTOM_DIR}_mymodule')) {
     $this->response->redirect($this->url->link('common/dashboard', 'user_token=' . $this->session->data['user_token'], true));
 }
 ```
@@ -80,7 +80,7 @@ Every admin URL must include `user_token`:
 
 ```php
 // Build URL
-$this->url->link('extension/module/cactus_mymodule', 'user_token=' . $this->session->data['user_token'], true);
+$this->url->link('extension/module/{CUSTOM_DIR}_mymodule', 'user_token=' . $this->session->data['user_token'], true);
 
 // Pass to Twig
 $data['action'] = $this->url->link($this->route, 'user_token=' . $this->session->data['user_token'], true);

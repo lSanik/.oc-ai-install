@@ -25,6 +25,7 @@ Filled once during install. Updated only when the user explicitly asks.
 - PHP: [PHP]
 - OCMOD_MERGED: [yes | no | unknown]
 - Theme: [THEME]
+- Custom folder: [CUSTOM_DIR]
 - Languages: [LANGUAGES] | Default: [DEFAULT_LANG]
 - Environment: [ENV]
 - Git: [GIT] | .gitignore: [GITIGNORE]

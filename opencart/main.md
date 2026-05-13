@@ -4,6 +4,8 @@
 
 You work on an OpenCart / ocStore project.
 
+> **Custom folder placeholder:** Throughout `.ai-oc-install/opencart/` docs, `{CUSTOM_DIR}` means the project's custom plugin folder — read its value from `project.md` field `Custom folder` (default: `my_custom`). `{CustomDir}` is its PascalCase form used in class names (e.g. `my_custom` → `MyCustom`; `cactus` → `Cactus`). Apply these values when following path, route, and class name patterns in this documentation.
+
 Platform instructions live under **`.ai-oc-install/opencart/`**. **Do not** load every `.md` from this folder at once: **before analysing and executing a task** open **only** the files you need.
 
 **DB mapping** — under **`.ai-oc-install/map/`**: start with **`db_mapping.md`** (curated DDL from install). For a **full column-level** definition of one table (as in `SHOW CREATE TABLE`), open **`db_tables/<table_name>.php`** when present (`$ddl` string). **`db_map.php`** lists all table names. SQL conventions — [`mysql.md`](mysql.md).
@@ -12,7 +14,7 @@ Platform instructions live under **`.ai-oc-install/opencart/`**. **Do not** load
 
 | Task context | Files in `.ai-oc-install/opencart/` |
 |--------------|--------------------------------------|
-| Overview, version, Cactus, OCMOD | `main.md` (this file) |
+| Overview, version, custom folder, OCMOD | `main.md` (this file) |
 | Controllers, routes, `$this->load` | `controller.md` |
 | Models, SQL in data layer | `model.md`, `mysql.md` |
 | Twig / templates | `view.md` |
@@ -84,33 +86,33 @@ system/
 
 ---
 
-## Cactus — standard for custom code
+## Custom plugin folder — standard for custom code (`{CUSTOM_DIR}`)
 
-**Cactus** is the pattern for all new custom code. Never mix it into OC core.
+**Custom plugin folder** is the pattern for all new custom code. Never mix it into OC core.
 
 ### Catalog (storefront)
 ```
-catalog/controller/cactus/[name].php
-catalog/model/cactus/[name].php
-catalog/view/theme/[theme]/template/cactus/[name].twig
-catalog/language/[locale]/cactus/[name].php
+catalog/controller/{CUSTOM_DIR}/[name].php
+catalog/model/{CUSTOM_DIR}/[name].php
+catalog/view/theme/[theme]/template/{CUSTOM_DIR}/[name].twig
+catalog/language/[locale]/{CUSTOM_DIR}/[name].php
 ```
 
 ### Admin
-Admin Cactus modules register as OC extensions:
+Admin custom modules register as OC extensions:
 ```
-admin/controller/extension/module/cactus/[name].php
-admin/model/extension/module/cactus/[name].php
-admin/view/template/extension/module/cactus/[name].twig
-admin/language/[locale]/extension/module/cactus/[name].php
+admin/controller/extension/module/{CUSTOM_DIR}/[name].php
+admin/model/extension/module/{CUSTOM_DIR}/[name].php
+admin/view/template/extension/module/{CUSTOM_DIR}/[name].twig
+admin/language/[locale]/extension/module/{CUSTOM_DIR}/[name].php
 ```
-Route: `extension/module/cactus/[name]`
+Route: `extension/module/{CUSTOM_DIR}/[name]`
 
 
 ### Dev / debug (local only)
 ```
-catalog/controller/cactus/dev/
-catalog/controller/cactus/dev/scripts/   ← one-off data scripts
+catalog/controller/{CUSTOM_DIR}/dev/
+catalog/controller/{CUSTOM_DIR}/dev/scripts/   ← one-off data scripts
 ```
 
 ---
@@ -156,7 +158,7 @@ require('...');
 
 ## Controller — typical role in OpenCart style (**new** code)
 
-Rules below are for **new** code (Cactus, etc.). **Do not rewrite legacy** unless the user **explicitly** asks.
+Rules below are for **new** code (`{CUSTOM_DIR}`, etc.). **Do not rewrite legacy** unless the user **explicitly** asks.
 
 **This is not business logic or SQL.** In a controller it is normal to:
 

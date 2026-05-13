@@ -24,23 +24,23 @@ Continue? (yes / no)
 
 ### When it may be needed
 
-- Add a new custom library: `system/library/cactus/[name].php`
+- Add a new custom library: `system/library/{CUSTOM_DIR}/[name].php`
 - Extend an existing library (rare, with care)
 - Integrate a third-party package
 
 ### Custom libraries
 
-New functionality — under cactus:
+New functionality — under the custom folder:
 
 ```
-system/library/cactus/currency_helper.php
-system/library/cactus/image_processor.php
+system/library/{CUSTOM_DIR}/currency_helper.php
+system/library/{CUSTOM_DIR}/image_processor.php
 ```
 
 Load:
 ```php
-$this->load->library('cactus/currency_helper');
-// available as $this->cactus_currency_helper
+$this->load->library('{CUSTOM_DIR}/currency_helper');
+// available as $this->{CUSTOM_DIR}_currency_helper
 ```
 
 ### Known critical libraries (default Warning Zone)

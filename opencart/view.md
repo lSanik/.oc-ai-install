@@ -25,7 +25,7 @@ Theme is set at install. If unknown — ask:
 ### Location
 
 ```
-admin/view/template/extension/module/cactus_currency.twig
+admin/view/template/extension/module/{CUSTOM_DIR}_currency.twig
 ```
 
 ### Basic admin page template
@@ -36,7 +36,7 @@ admin/view/template/extension/module/cactus_currency.twig
   <div class="page-header">
     <div class="container-fluid">
       <div class="pull-right">
-        <button type="submit" form="form-cactus-currency" class="btn btn-primary">
+        <button type="submit" form="form-{CUSTOM_DIR}-currency" class="btn btn-primary">
           <i class="fa fa-save"></i> {{ button_save }}
         </button>
         <a href="{{ cancel }}" class="btn btn-default">
@@ -63,12 +63,12 @@ admin/view/template/extension/module/cactus_currency.twig
     <div class="panel panel-default">
       <div class="panel-heading"><h3 class="panel-title">{{ text_edit }}</h3></div>
       <div class="panel-body">
-        <form id="form-cactus-currency" action="{{ action }}" method="post">
+        <form id="form-{CUSTOM_DIR}-currency" action="{{ action }}" method="post">
 
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ entry_usd_rate }}</label>
             <div class="col-sm-10">
-              <input type="text" name="cactus_currency_usd_rate" value="{{ cactus_currency_usd_rate }}" class="form-control" />
+              <input type="text" name="{CUSTOM_DIR}_currency_usd_rate" value="{{ {CUSTOM_DIR}_currency_usd_rate }}" class="form-control" />
             </div>
           </div>
 
@@ -95,7 +95,7 @@ admin/view/template/extension/module/cactus_currency.twig
 ### Location
 
 ```
-catalog/view/theme/[THEME]/template/cactus/[name].twig
+catalog/view/theme/[THEME]/template/{CUSTOM_DIR}/[name].twig
 ```
 
 If theme unknown — **ask** before writing paths.
@@ -165,11 +165,11 @@ If unknown — ask the user.
 
 ```php
 // Controller (3.x)
-$this->load->language('cactus/products');
-$data['products'] = $this->model_cactus_products->getProducts();
-$data['action']   = $this->url->link('cactus/products/save', '', true);
+$this->load->language('{CUSTOM_DIR}/products');
+$data['products'] = $this->model_{CUSTOM_DIR}_products->getProducts();
+$data['action']   = $this->url->link('{CUSTOM_DIR}/products/save', '', true);
 
-$this->response->setOutput($this->load->view('cactus/products', $data));
+$this->response->setOutput($this->load->view('{CUSTOM_DIR}/products', $data));
 ```
 
 **2.x:** language strings must be in `$data`:
@@ -177,7 +177,7 @@ $this->response->setOutput($this->load->view('cactus/products', $data));
 ```php
 // Controller (2.x only)
 $data['heading_title'] = $this->language->get('heading_title');
-$data['products']      = $this->model_cactus_products->getProducts();
+$data['products']      = $this->model_{CUSTOM_DIR}_products->getProducts();
 ```
 
 ```twig

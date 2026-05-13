@@ -22,11 +22,11 @@ What belongs in a typical OpenCart controller and why a multi-model "pipeline" i
 
 ```php
 <?php
-class ControllerCactusCurrencyRecalc extends Controller {
+class Controller{CustomDir}CurrencyRecalc extends Controller {
 
     public function index(): void {
-        $this->load->language('cactus/currency_recalc');
-        $this->load->model('cactus/currency_recalc');
+        $this->load->language('{CUSTOM_DIR}/currency_recalc');
+        $this->load->model('{CUSTOM_DIR}/currency_recalc');
 
         $this->document->setTitle($this->language->get('heading_title'));
 
@@ -36,7 +36,7 @@ class ControllerCactusCurrencyRecalc extends Controller {
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['footer']      = $this->load->controller('common/footer');
 
-        $this->response->setOutput($this->load->view('cactus/currency_recalc', $data));
+        $this->response->setOutput($this->load->view('{CUSTOM_DIR}/currency_recalc', $data));
     }
 
     private function _buildData(): array {
@@ -49,15 +49,15 @@ class ControllerCactusCurrencyRecalc extends Controller {
 ### Catalog routing
 
 ```
-route=cactus/currency_recalc
-→ catalog/controller/cactus/currency_recalc.php
-→ class ControllerCactusCurrencyRecalc
+route={CUSTOM_DIR}/currency_recalc
+→ catalog/controller/{CUSTOM_DIR}/currency_recalc.php
+→ class Controller{CustomDir}CurrencyRecalc
 → index() by default
 ```
 
 Custom method:
 ```
-route=cactus/currency_recalc/process
+route={CUSTOM_DIR}/currency_recalc/process
 → process()
 ```
 
@@ -84,18 +84,18 @@ if ($this->request->server['REQUEST_METHOD'] === 'POST') {
 ### Path and route
 
 ```
-admin/controller/extension/module/cactus_currency.php
-→ route: extension/module/cactus_currency
-→ class: ControllerExtensionModuleCactusCurrency
+admin/controller/extension/module/{CUSTOM_DIR}_currency.php
+→ route: extension/module/{CUSTOM_DIR}_currency
+→ class: ControllerExtensionModule{CustomDir}Currency
 ```
 
 ### Admin controller structure
 
 ```php
 <?php
-class ControllerExtensionModuleCactusCurrency extends Controller {
+class ControllerExtensionModule{CustomDir}Currency extends Controller {
 
-    private string $route = 'extension/module/cactus_currency';
+    private string $route = 'extension/module/{CUSTOM_DIR}_currency';
     private array $error  = [];
 
     public function index(): void {
@@ -105,7 +105,7 @@ class ControllerExtensionModuleCactusCurrency extends Controller {
         $this->document->setTitle($this->language->get('heading_title'));
 
         if ($this->request->server['REQUEST_METHOD'] === 'POST' && $this->_validate()) {
-            $this->model_setting_setting->editSetting('cactus_currency', $this->request->post);
+            $this->model_setting_setting->editSetting('{CUSTOM_DIR}_currency', $this->request->post);
             $this->session->data['success'] = $this->language->get('text_success');
             $this->response->redirect($this->url->link($this->route, 'user_token=' . $this->session->data['user_token'], true));
         }
@@ -115,7 +115,7 @@ class ControllerExtensionModuleCactusCurrency extends Controller {
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['footer']      = $this->load->controller('common/footer');
 
-        $this->response->setOutput($this->load->view('extension/module/cactus_currency', $data));
+        $this->response->setOutput($this->load->view('extension/module/{CUSTOM_DIR}_currency', $data));
     }
 
     private function _validate(): bool {
@@ -146,25 +146,25 @@ class ControllerExtensionModuleCactusCurrency extends Controller {
 
 ```php
 // Save — associative array under module code
-$this->model_setting_setting->editSetting('cactus_currency', $this->request->post);
+$this->model_setting_setting->editSetting('{CUSTOM_DIR}_currency', $this->request->post);
 
 // Read
-$this->config->get('cactus_currency_some_key');
+$this->config->get('{CUSTOM_DIR}_currency_some_key');
 // or
-$this->model_setting_setting->getSettingValue('cactus_currency_some_key');
+$this->model_setting_setting->getSettingValue('{CUSTOM_DIR}_currency_some_key');
 ```
 
 ### Admin URLs
 
 ```php
 // always with user_token and true (HTTPS)
-$this->url->link('extension/module/cactus_currency', 'user_token=' . $this->session->data['user_token'], true);
+$this->url->link('extension/module/{CUSTOM_DIR}_currency', 'user_token=' . $this->session->data['user_token'], true);
 ```
 
 ### Permissions
 
 After creating a new admin module — remind the user to add permissions:
-> In admin: System → Users → User Groups → Administrator → add **access** and **modify** for `extension/module/cactus_[name]`
+> In admin: System → Users → User Groups → Administrator → add **access** and **modify** for `extension/module/{CUSTOM_DIR}_[name]`
 
 ---
 
@@ -179,7 +179,7 @@ In version 3.x the Twig template receives all language strings directly through 
 
 ```php
 // CORRECT for 3.x — load and stop
-$this->load->language('extension/module/cactus_currency');
+$this->load->language('extension/module/{CUSTOM_DIR}_currency');
 
 // WRONG for 3.x — unnecessary manual extraction
 $data['heading_title'] = $this->language->get('heading_title');
@@ -208,7 +208,7 @@ $data['success']       = isset($this->session->data['success']) ? $this->session
 In version 2.x (`.tpl` templates) language variables **must** be passed through `$data`:
 
 ```php
-$this->load->language('extension/module/cactus_currency');
+$this->load->language('extension/module/{CUSTOM_DIR}_currency');
 $data['heading_title'] = $this->language->get('heading_title');
 ```
 
@@ -240,12 +240,12 @@ include(DIR_APPLICATION . 'model/...');
 ```php
 // catalog loads only catalog models
 $this->load->model('catalog/product');
-$this->load->model('cactus/my_module');
+$this->load->model('{CUSTOM_DIR}/my_module');
 
 // admin loads admin models
 $this->load->model('catalog/product');       // admin has its own catalog models
 $this->load->model('setting/setting');
-$this->load->model('extension/module/cactus_currency');
+$this->load->model('extension/module/{CUSTOM_DIR}_currency');
 ```
 
 ### AJAX response
@@ -258,7 +258,7 @@ public function ajaxAction(): void {
     try {
         // logic via model
         $json['success'] = true;
-        $json['data']    = $this->model_cactus_something->getData();
+        $json['data']    = $this->model_{CUSTOM_DIR}_something->getData();
     } catch (\Exception $e) {
         $json['error'] = $e->getMessage();
     }

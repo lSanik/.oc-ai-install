@@ -20,13 +20,13 @@ Admin OC 3.x uses **Bootstrap 3** (built-in). Do not switch to Bootstrap 4/5 wit
 Custom admin CSS:
 
 ```
-admin/view/stylesheet/cactus/   ← custom admin styles
+admin/view/stylesheet/{CUSTOM_DIR}/   ← custom admin styles
 ```
 
 Load:
 
 ```php
-$this->document->addStyle('view/stylesheet/cactus/my-admin-style.css');
+$this->document->addStyle('view/stylesheet/{CUSTOM_DIR}/my-admin-style.css');
 ```
 
 ---
@@ -35,7 +35,7 @@ $this->document->addStyle('view/stylesheet/cactus/my-admin-style.css');
 
 Do not overwrite core theme CSS files. Instead:
 
-1. Create a separate file under a `cactus/` subfolder
+1. Create a separate file under a `{CUSTOM_DIR}/` subfolder
 2. Load it after main theme styles (higher cascade priority)
 
 ---

@@ -16,17 +16,17 @@ The controller never writes SQL. Everything goes through the model.
 
 ```php
 <?php
-class ModelCactusCurrencyRecalc extends Model {
+class Model{CustomDir}CurrencyRecalc extends Model {
 
     /**
      * Get all products with currency fields
      */
     public function getProductsWithCurrency(): array {
         $query = $this->db->query("
-            SELECT p.product_id, p.price, p.cactus_currency_code, p.cactus_price_foreign
+            SELECT p.product_id, p.price, p.{CUSTOM_DIR}_currency_code, p.{CUSTOM_DIR}_price_foreign
             FROM `" . DB_PREFIX . "product` p
-            WHERE p.cactus_currency_code != ''
-              AND p.cactus_currency_code IS NOT NULL
+            WHERE p.{CUSTOM_DIR}_currency_code != ''
+              AND p.{CUSTOM_DIR}_currency_code IS NOT NULL
         ");
 
         return $query->rows;
@@ -135,16 +135,16 @@ die(0);
 
 // DB schema change log
 
-# 2026-03-23 | oc_product: added cactus_currency_code, cactus_price_foreign
+# 2026-03-23 | oc_product: added {CUSTOM_DIR}_currency_code, {CUSTOM_DIR}_price_foreign
 '
 ALTER TABLE `oc_product`
-  ADD COLUMN `cactus_currency_code` varchar(8) NOT NULL DEFAULT \'\' AFTER `price`,
-  ADD COLUMN `cactus_price_foreign` decimal(15,4) NOT NULL DEFAULT \'0.0000\' AFTER `cactus_currency_code`;
+  ADD COLUMN `{CUSTOM_DIR}_currency_code` varchar(8) NOT NULL DEFAULT \'\' AFTER `price`,
+  ADD COLUMN `{CUSTOM_DIR}_price_foreign` decimal(15,4) NOT NULL DEFAULT \'0.0000\' AFTER `{CUSTOM_DIR}_currency_code`;
 ';
 
-# 2026-03-20 | cactus_rates: created exchange rate table
+# 2026-03-20 | {CUSTOM_DIR}_rates: created exchange rate table
 '
-CREATE TABLE `oc_cactus_rates` (
+CREATE TABLE `oc_{CUSTOM_DIR}_rates` (
   `rate_id` int(11) NOT NULL AUTO_INCREMENT,
   `currency_code` varchar(8) NOT NULL,
   `rate` decimal(15,6) NOT NULL,
@@ -173,14 +173,14 @@ For module config (not separate tables):
 $this->load->model('setting/setting');
 
 // Save (associative array under module code)
-$this->model_setting_setting->editSetting('cactus_currency', [
-    'cactus_currency_usd_rate' => 38.5,
-    'cactus_currency_eur_rate' => 42.0,
-    'cactus_currency_updated'  => date('Y-m-d H:i:s'),
+$this->model_setting_setting->editSetting('{CUSTOM_DIR}_currency', [
+    '{CUSTOM_DIR}_currency_usd_rate' => 38.5,
+    '{CUSTOM_DIR}_currency_eur_rate' => 42.0,
+    '{CUSTOM_DIR}_currency_updated'  => date('Y-m-d H:i:s'),
 ]);
 
 // Read anywhere
-$rate = $this->config->get('cactus_currency_usd_rate');
+$rate = $this->config->get('{CUSTOM_DIR}_currency_usd_rate');
 ```
 
 ---

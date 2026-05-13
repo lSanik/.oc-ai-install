@@ -15,7 +15,7 @@ Detect PHP version (`PHP =`) and follow the matching standard. If unknown — **
 ## Type hints (PHP 7+)
 
 ```php
-// Parameters and return types — new code (cactus) only
+// Parameters and return types — new code (custom folder) only
 public function getProduct(int $product_id): array {
     // ...
 }
@@ -80,7 +80,7 @@ $sql = "
 
 ## Error handling in OC
 
-OC does not use exceptions systematically in 2.x/3.x. In new code (cactus):
+OC does not use exceptions systematically in 2.x/3.x. In new code (custom folder):
 
 ```php
 // In model — throw on critical failure
@@ -93,7 +93,7 @@ public function processPayment(array $data): array {
 
 // In controller — catch and return as error
 try {
-    $result = $this->model_cactus_payment->processPayment($data);
+    $result = $this->model_{CUSTOM_DIR}_payment->processPayment($data);
     $json['success'] = true;
 } catch (\Exception $e) {
     $json['error'] = $e->getMessage();
