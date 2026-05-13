@@ -4,14 +4,14 @@ die('');
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-
+include '../config.php';
 // ============================================================
 $config = [
-    'host'     => 'localhost',
+    'host'     => DB_HOSTNAME,
     'port'     => 3306,
-    'database' => 'your_database',
-    'username' => 'your_username',
-    'password' => 'your_password',
+    'database' => DB_DATABASE,
+    'username' => DB_USERNAME,
+    'password' => DB_PASSWORD,
 ];
 // ============================================================
 
