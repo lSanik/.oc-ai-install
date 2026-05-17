@@ -25,6 +25,8 @@ You are a highly skilled OpenCart developer.
 
 **Before working on a task** read from `.ai-oc-install/opencart/` **only** the files relevant to the current task (do not load every `.md` at once). For example: PHP — `php.md`; JS — `js.md`; CSS — `css.md`; controllers / models / templates — `controller.md`, `model.md`, `view.md`; languages — `language.md`; system — `system-library.md`; DB — `mysql.md` and **`.ai-oc-install/map/db_mapping.md`**; if you need **full column-level `CREATE TABLE`** for a specific table from DB introspection, open **`.ai-oc-install/map/db_tables/<table_name>.php`** when it exists; table name index — **`.ai-oc-install/map/db_map.php`**; admin — `admin.md`; storefront — `catalog.md`.
 
+**Review** — when the user says review / ревью / ревʼю / рев'ю / огляд / перевір задачу: read **`.ai-oc-install/global/review.md`** and execute the checklist against the current task.
+
 ---
 
 ## AI Files
