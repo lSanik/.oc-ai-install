@@ -19,6 +19,8 @@ The wizard asks you a series of questions about your project and generates a rea
 
 Sensitive files (`config.php`, `.env`, `admin/config.php`, `system/config/`, etc.) are blocklisted automatically — the AI will refuse to read or modify them.
 
+Say **review / ревью / перевір задачу** after any task and the AI runs a 12-point OpenCart checklist: PHP syntax, debug cleanup, architecture rules, DB escaping, cache, security, performance, and more.
+
 ---
 
 ## Who it is for
@@ -92,7 +94,8 @@ These global rules are intentionally minimal ("light"). They establish sensible 
 ├── global/
 │   ├── blocklist.md          # Red Zone: files the AI must never read or modify
 │   ├── git.md                # Git / .gitignore guidance
-│   └── warning-zone.md       # Template for files that need extra care
+│   ├── warning-zone.md       # Template for files that need extra care
+│   └── review.md             # Review checklist: triggered by "review / ревью / перевір задачу"
 ├── opencart/
 │   ├── main.md               # Core OpenCart architecture overview
 │   ├── controller.md         # MVC: controllers
